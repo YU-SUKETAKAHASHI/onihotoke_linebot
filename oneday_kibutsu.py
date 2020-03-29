@@ -33,8 +33,8 @@ from gspred import setsheet, search_last_row, record_keyword, record_error, reco
 setsheet()
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('7+16pRmi91TmeXE/17egZeXKAYOyR+iANe6mK+Uzu8gHsMKY28D//2JFm6ZeJvWNyeEKeqvS+spotMVDtyJ7oHqBunDOMKhsZcBcgpNpN+JBHC+g77K6Bd7kH4ufbDqUlXepi9u6ed8lPqdiPT3RWAdB04t89/1O/w1cDnyilFU=') #アクセストークンを入れてください
-handler = WebhookHandler('8beff7bc71b4c162566f6a2b4b454f0b') #Channel Secretを入れてください
+line_bot_api = LineBotApi('access token') #アクセストークンを入れてください
+handler = WebhookHandler('channel secret') #Channel Secretを入れてください
 
 
 @app.route("/callback", methods=['POST'])

@@ -4,7 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 def setsheet():
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('arctic-signer-266409-bb3cba7c5154.json', scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('arctic-signer-.json', scope)
     global worksheet    
     gc = gspread.authorize(credentials)
     gc = gc.open("mySheet")

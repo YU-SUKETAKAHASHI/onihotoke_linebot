@@ -20,7 +20,7 @@ def get_dict_resultset(sql):
 
 def get_connection():
     #dsn = os.environ.get('DATABASE_URL')
-    dsn = "postgres://"
+    dsn = "postgres://...."
     return psycopg2.connect(dsn)
 
 
