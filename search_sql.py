@@ -20,7 +20,7 @@ def get_dict_resultset(sql):
 
 def get_connection():
     #dsn = os.environ.get('DATABASE_URL')
-    dsn = "postgres://gpzlxuuqtesrev:8b857020f33ae19a287bee2ed6d29b4bba1fa2c2984de17d063dcd307676478a@ec2-54-243-197-120.compute-1.amazonaws.com:5432/d1d0ecenbq20dv"
+    dsn = "postgres://"
     return psycopg2.connect(dsn)
 
 
