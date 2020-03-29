@@ -1,0 +1,1 @@
+web: python oneday_kibutsu.py
