@@ -33,8 +33,11 @@ from gspred import setsheet, search_last_row, record_keyword, record_error, reco
 setsheet()
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('access token') #アクセストークンを入れてください
-handler = WebhookHandler('channel secret') #Channel Secretを入れてください
+YOUR_CHANNEL_ACCESS_TOKEN = os.environ["YOUR_CHANNEL_ACCESS_TOKEN"]
+YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
+
+line_bot_api = LineBotApi('YOUR_CHANNEL_ACCESS_TOKEN') #アクセストークンを入れてください
+handler = WebhookHandler('YOUR_CHANNEL_SECRET') #Channel Secretを入れてください
 
 
 @app.route("/callback", methods=['POST'])
@@ -98,7 +101,7 @@ def handle_message(event):
 
             except LineBotApiError:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
-                record_error(text)
+                #record_error(text)
 
         #検索結果が空だったとき、その旨をユーザーに送信
         else :
@@ -106,7 +109,7 @@ def handle_message(event):
                 event.reply_token,
                 TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
-            record_notExist(text)
+            #record_notExist(text)
 
     #もう一度探すとき
     elif "でもう一度探す" in text:
@@ -151,7 +154,7 @@ def handle_message(event):
 
             except LineBotApiError:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
-                record_error(text)
+                #record_error(text)
 
         #検索結果が空だったとき、その旨をユーザーに送信
         else :
@@ -159,7 +162,7 @@ def handle_message(event):
                 event.reply_token,
                 TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
-            record_notExist(text)
+            #record_notExist(text)
 
     #『〇〇のすべての講義』のボタンが押されたとき、その〇〇の検索結果をすべて表示
     elif "のすべての講義" in text:
@@ -202,7 +205,7 @@ def handle_message(event):
 
             except LineBotApiError:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
-                record_error(text)
+                #record_error(text)
 
         #検索結果が空だったとき、その旨をユーザーに送信
         else:
@@ -210,7 +213,7 @@ def handle_message(event):
                     event.reply_token,
                     TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
-            record_notExist(text)
+            #record_notExist(text)
 
     #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
     elif "_" in text:
@@ -254,7 +257,7 @@ def handle_message(event):
                 event.reply_token,
                 TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
-            record_notExist(text)
+            #record_notExist(text)
 
     else :
         line_bot_api.reply_message(
