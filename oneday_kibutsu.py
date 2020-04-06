@@ -30,25 +30,34 @@ from search_sql import searchLecture, searchTeacher, searchAll
 from gspred import setsheet, search_last_row, record_keyword, record_error, record_notExist, record_userinfo
 
 
-setsheet()
+#setsheet()
 app = Flask(__name__)
 
-YOUR_CHANNEL_ACCESS_TOKEN = os.environ["YOUR_CHANNEL_ACCESS_TOKEN"]
-YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
+LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
+LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
 
-line_bot_api = LineBotApi('YOUR_CHANNEL_ACCESS_TOKEN') #アクセストークンを入れてください
-handler = WebhookHandler('YOUR_CHANNEL_SECRET') #Channel Secretを入れてください
 
+line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN) 
+handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 @app.route("/callback", methods=['POST'])
 def callback():
+
+    # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
+    # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
+    # handle webhook body
     try:
         handler.handle(body, signature)
+    except LineBotApiError as e:
+        print("Got exception from LINE Messaging API: %s\n" % e.message)
+        for m in e.error.details:
+            print("  %s: %s" % (m.property, m.message))
+        print("\n")
     except InvalidSignatureError:
         abort(400)
 
@@ -58,7 +67,6 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-
     #教官または講義名いずれかが送信されたとき.
     if "_" not in text:
         teacherList = searchTeacher(text, False)#教員列からワードを検索
@@ -110,6 +118,10 @@ def handle_message(event):
                 TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
             #record_notExist(text)
+
+#★コレより上はそのまんま使えそう。関数化の余地はないように思われる。
+
+#★もう一度探すのはpostbaskイベント使ってやった方がスマードに見せられそう。★つまりもう一度探すにpostbackアクションを仕込む
 
     #もう一度探すとき
     elif "でもう一度探す" in text:
@@ -164,6 +176,8 @@ def handle_message(event):
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
             #record_notExist(text)
 
+
+#★この機能なくていい気がする。バグのもと
     #『〇〇のすべての講義』のボタンが押されたとき、その〇〇の検索結果をすべて表示
     elif "のすべての講義" in text:
         text = text.split("_")[0]#リストになってる
@@ -244,12 +258,12 @@ def handle_message(event):
             #最後にツイッターのリンクをつける
             messages.append("バグ,要望等がありましたらこちらまでご報告ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_")
 
-            #try:
-            line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=message) for message in messages[-5:]])
+            try:
+                line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=message) for message in messages[-5:]])
             #record_keyword(text)
 
-            #except LineBotApiError:
-                #line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
+            except LineBotApiError:
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
                 #record_error(text)
 
         else:
@@ -269,7 +283,7 @@ def handle_message(event):
 #友だち追加したときに、そのユーザーの情報がbotから通知される
 @handler.add(FollowEvent)
 def handle_follow(event):
-    #誰が追加したかわかるように機能追加
+    #誰が追加したかわかるように機能追加 ★コレもslackに流す
     profile = line_bot_api.get_profile(event.source.user_id)
     line_bot_api.push_message("U90270fbcc310d31bb0c7bdbaa1e4b01c",
         TextSendMessage(text="表示名:{}\nユーザID:{}\n画像のURL:{}\nステータスメッセージ:{}"\
@@ -285,6 +299,5 @@ def handle_follow(event):
 
 if __name__ == "__main__":
     app.debug=True
-    port = int(os.environ.get('PORT', 8000))
-    app.run(host ='0.0.0.0',port = port)
-    #app.run(debug=True, port=8000)
+    #port = int(os.environ.get('PORT', 8000))
+    app.run(host ='0.0.0.0')#,port = port)
