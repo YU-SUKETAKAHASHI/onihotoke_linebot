@@ -19,8 +19,7 @@ def get_dict_resultset(sql):
 
 
 def get_connection():
-    #dsn = os.environ.get('DATABASE_URL')
-    dsn = "postgres://...."
+    dsn = os.environ.get('DATABASE_URL')
     return psycopg2.connect(dsn)
 
 
@@ -64,7 +63,7 @@ def searchLecture(text, bool):
     return lecture_info_list
 
 
-#講義名と教官名を受け取る.ただし順番はわからない.
+#講義名と教官名を受け取る.ただし順番はわからない.　★二回データベースを検索してるから効率悪い。
 def searchAll(text1, text2):
     list1 = searchTeacher(text1, True)#とりあえずどっちのワードでも検索してみて,つなげてる.
     list2 = searchTeacher(text2, True)
