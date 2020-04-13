@@ -33,6 +33,6 @@ def search_lecture_info(group, classes):
     if group in "文教法経":
         sql = f"select * from lecture_info where group='{group}' and classes like '文系%' "
         bunkei_lecture_info = get_lecture_list(sql)
-        lecture_info.extend(bunkei_lecture_info))
+        lecture_info.extend(bunkei_lecture_info)
 
     return lecture_info
