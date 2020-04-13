@@ -149,9 +149,9 @@ def gen_card_syllabus(dic):
         "style": "secondary",
         "height": "sm",
         "action": {
-          "type": "uri",
-          "label": "鬼仏",
-          "uri": "https://linecorp.com"
+          "type": "message",
+          "label": "鬼仏検索",
+          "text": subject + "_" + teacher
         }
       },
       {
