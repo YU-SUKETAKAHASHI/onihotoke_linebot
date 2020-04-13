@@ -1,5 +1,21 @@
 #シラバスからの検索
 def gen_card_syllabus(dic):
+
+"""
+  dic = {"subject":"思想と倫理の世界",
+             "title":"現代における人間の探究―哲学的人間学入門",
+             "teacher":"佐藤　透",
+             "code":"CB21113",
+             "semester":"１セメ",
+             "day_time":"火１",
+             "classes":"医保歯薬工" }
+
+==Return==
+    origin_json :取得したdicのデータでテンプレから変更したjsonデータ
+
+"""
+
+
     origin_json = {
   "type": "bubble",
   "body": {
@@ -171,6 +187,23 @@ def gen_card_syllabus(dic):
 
 
 def gen_card_onihotoke(dic):
+
+"""
+dic = {'subject': '思想と倫理の世界',
+    'teacher': '佐藤　透',
+    'difficulty': '仏',
+    'worth': 'あり',
+    'comment': '非常に有意義でした',
+    'test': 'なーい',
+    'report': '重すぎます',
+    'attendance': '毎回',
+    'postdate':'2020年04月13日'}
+
+==Return==
+    origin_json :取得したdicのデータでテンプレから変更したjsonデータ
+
+"""
+
     origin_json = {
   "type": "bubble",
   "header": {
@@ -401,6 +434,9 @@ def gen_card_onihotoke(dic):
   }
 }
 
+
+
+    #各要素を取得する
     subject = dic["subject"]
     teacher = dic["teacher"]
     difficulty = dic["difficulty"]
@@ -412,6 +448,8 @@ def gen_card_onihotoke(dic):
     comment = dic["comment"]
     #print(difficulty)
 
+
+    #commentは一番最後に置きます
     origin_json["body"]["contents"][0]["text"] = subject
     origin_json["body"]["contents"][2]["contents"][0]["contents"][1]["text"] = teacher
     origin_json["body"]["contents"][2]["contents"][1]["contents"][1]["text"] = difficulty
@@ -422,6 +460,8 @@ def gen_card_onihotoke(dic):
     origin_json["body"]["contents"][2]["contents"][6]["contents"][1]["text"] = postdate
     origin_json["body"]["contents"][2]["contents"][7]["contents"][1]["text"] = comment
 
+
+    #difficultyに応じてヘッダーの色を変更
     if "仏" in difficulty:
         origin_json["header"]["backgroundColor"] = "#fffacd"
     elif "鬼" in difficulty:
