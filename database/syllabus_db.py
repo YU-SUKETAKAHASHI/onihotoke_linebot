@@ -19,18 +19,12 @@ def get_lecture_list(sql):
 
 
 def search_lecture_info(group, classes):
-    sql = f"select * from lecture_info where group='{group}' and classes like '%{classes}%'"
+    sql = f"select * from lecture_info where group='{group}' and classes like '%{classes}%' "
     lecture_info = get_lecture_list(sql)
+
+    if group in "文教法経":
+        sql = f"select * from lecture_info where group='{group}' and classes like '文系%' "
+        bunkei_lecture_info = get_lecture_list(sql)
+        lecture_info.extend(bunkei_lecture_info))
+
     return lecture_info
-
-
-# def search_society_info(classes):
-#     sql = f"select * from lecture_info where (group=社会論 or group=社会科学) and classes like '%{classes}%'"
-#     lecture_info = get_lecture_list(sql)
-#     return lecture_info
-
-
-
-# def search_nature_info(classes):
-
-#     return lecture_info
