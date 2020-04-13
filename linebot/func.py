@@ -159,7 +159,7 @@ def gen_card_syllabus(dic):
           "type": "message",
           "label": "鬼仏検索",
           "text": subject + "_" + teacher
-        }0
+        }
       },
       {
         "type": "spacer",
