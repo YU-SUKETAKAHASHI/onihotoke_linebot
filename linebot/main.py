@@ -22,7 +22,6 @@ CHANNEL_SECRET = os.environ.get('CHANNEL_SECRET')
 line_bot_api = LineBotApi(LINE_BOT_API) #アクセストークンを入れてください
 handler = WebhookHandler(CHANNEL_SECRET) #Channel Secretを入れてください
 
-################################################################################################
 
 
 ################################################################################################
@@ -73,7 +72,7 @@ def on_postback(event):
                 [TextSendMessage(text="あなたが今セメスターにとれる" + postback_msg + "の講義は以下の通りです"),
                 FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([origin_json,origin_json,origin_json,origin_json
+                    contents=CarouselContainer([
 
                     ])
                     )
@@ -87,7 +86,7 @@ def on_postback(event):
                 [TextSendMessage(text="あなたが今セメスターにとれる" + postback_msg + "の講義は以下の通りです"),
                 FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([origin_json
+                    contents=CarouselContainer([
 
                     ])
                     )
@@ -102,7 +101,7 @@ def on_postback(event):
                 [TextSendMessage(text="あなたが今セメスターにとれる" + postback_msg + "の講義は以下の通りです"),
                 FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([origin_json
+                    contents=CarouselContainer([
 
                     ])
                     )
