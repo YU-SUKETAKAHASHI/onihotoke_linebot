@@ -19,6 +19,11 @@ def get_lecture_list(sql):
 
 
 def search_lecture_info(group, classes):
+    """
+    <<parameta>>
+    group : 
+    """
+
     sql = f"select * from lecture_info where group='{group}' and classes like '%{classes}%' "
     lecture_info = get_lecture_list(sql)
 
