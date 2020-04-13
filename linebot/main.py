@@ -14,7 +14,7 @@ from linebot.models import (
 
 from database.operate import get_connection, get_lecture_list, search_lecture_info
 from func import gen_card_syllabus
-from user_db import get_usermajor
+from user_db import get_usermajor, del_userinfo, add_userinfo
 
 app = Flask(__name__)
 
@@ -71,7 +71,7 @@ def on_postback(event):
 
     else: # ユーザ情報をDBに格納
         user_major = post_data
-        add_userid(user_major, user_id)
+        add_userinfo(user_major, user_id)
 
 #####################################################################################
 @handler.add(FollowEvent)
@@ -91,6 +91,9 @@ def handle_message(event):
     text = event.message.text
 
     if text == "学部再登録":
+        userid = event.source.user_id
+        del_userinfo(userid) # user情報を削除
+
         line_bot_api.reply_message(
             event.reply_token,
             [TextSendMessage(text="現在登録されていた学部、研究科は削除されました。"),
