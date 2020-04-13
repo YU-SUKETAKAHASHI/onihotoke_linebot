@@ -20,8 +20,11 @@ def get_lecture_list(sql):
 
 def search_lecture_info(group, classes):
     """
-    <<parameta>>
-    group : 
+    ==Parameta==
+        group(str)   : 取得した講義の群（人間論とか）
+        classes(str) : ユーザの所属（工とか文とか）
+    ==Return==
+        辞書型の講義データのリスト
     """
 
     sql = f"select * from lecture_info where group='{group}' and classes like '%{classes}%' "

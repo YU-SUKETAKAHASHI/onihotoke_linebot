@@ -79,12 +79,4 @@ def searchAll(text1, text2):
 
 
 if __name__ == "__main__":
-    text1 = "線形代数"
-    text2 = "島倉"
-    print(searchTeacher(text1, False))
-    print()
-    print()
-    print(searchLecture(text2, False))
-    print()
-    print()
-    print(searchAll(text1,text2))
+    print("jobs")

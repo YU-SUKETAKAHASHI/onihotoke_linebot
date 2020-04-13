@@ -13,16 +13,18 @@ from linebot.models import (
     FlexSendMessage,FlexSendMessage,CarouselContainer)
 
 from database.operate import get_connection, get_lecture_list, search_lecture_info
+from func import gen_card_syllabus
+from user_db import get_usermajor
 
 app = Flask(__name__)
 
-LINE_BOT_API = os.environ.get('LINE_BOT_API')
-CHANNEL_SECRET = os.environ.get('CHANNEL_SECRET')
+LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
+LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
+line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-line_bot_api = LineBotApi(LINE_BOT_API) #アクセストークンを入れてください
-handler = WebhookHandler(CHANNEL_SECRET) #Channel Secretを入れてください
 
-
+major_list = ["文学部", "教育学部", "法学部", "経済学部", "理学部", "医学部", "歯学部", "薬学部", "工学部", "農学部"]
 
 ################################################################################################
 @app.route("/callback", methods=['POST'])
@@ -47,68 +49,60 @@ def callback():
 
     return 'OK'
 
-#--------------------------------------------------------------------------------------------------------------------------
 
+################################################################################################
 @handler.add(PostbackEvent)
 def on_postback(event):
     user_id = event.source.user_id
     reply_token = event.reply_token
-    postback_msg = event.postback.data
+    post_data = event.postback.data
 
-    if postback_msg == "人間論":
+    # 絞り込み検索
+    if post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
+        lecture_group = post_data
+        user_major = get_usermajor(userid) #useridを受け取ってDBからそのユーザの所属を返す
+        lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
 
         line_bot_api.reply_message(
                 event.reply_token,
                 FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([{
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info])))
 
-}])))
-
-    elif postback_msg == "自然論":
-
-        line_bot_api.reply_message(
-                event.reply_token,
-                [TextSendMessage(text="あなたが今セメスターにとれる" + postback_msg + "の講義は以下の通りです"),
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([
-
-                    ])
-                    )
-                ]
-            )
-
-    elif postback_msg == "社会論":
-
-        line_bot_api.reply_message(
-                event.reply_token,
-                [TextSendMessage(text="あなたが今セメスターにとれる" + postback_msg + "の講義は以下の通りです"),
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([
-
-                    ])
-                    )
-                ]
-            )
-
-
-    elif postback_msg == "英語":
-
-        line_bot_api.reply_message(
-                event.reply_token,
-                [TextSendMessage(text="あなたが今セメスターにとれる" + postback_msg + "の講義は以下の通りです"),
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([
-
-                    ])
-                    )
-                ]
-            )
+    else: # ユーザ情報をDBに格納
+        user_major = post_data
+        add_userid(user_major, user_id)
 
 #####################################################################################
+@handler.add(FollowEvent)
+def handle_follow(event):
+    line_bot_api.reply_message(
+            event.reply_token,
+            [TextSendMessage(text="友だち追加ありがとうございます。\n\n"),
+            TextSendMessage(
+            text="下のボタンから学部を選択してください。\n\n学部を間違えて登録した際は、画面下部のメニューバーより再登録することができます。",
+            quick_reply=QuickReply(
+                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
+            ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
+
+#####################################################################################
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    text = event.message.text
+
+    if text == "学部再登録":
+        line_bot_api.reply_message(
+            event.reply_token,
+            [TextSendMessage(text="現在登録されていた学部、研究科は削除されました。"),
+                TextSendMessage(
+                text="もう一度下のボタンから学部を選択してください。",
+                quick_reply=QuickReply(
+                    items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
+                ))])
+
+
+#####################################################################################
+
 rich_menu_to_create = RichMenu(
     size = RichMenuSize(width=2500, height=1686),
     selected = False,

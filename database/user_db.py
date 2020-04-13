@@ -10,11 +10,13 @@ def get_userinfo_list(sql):
             results = cur.fetchall()
     return results
 
+
 # 入力されたSQL文でDBを操作する
 def operation_db(sql):
     with get_connection() as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             cur.execute (sql)
+
 
 # DBと接続する
 def get_connection():
@@ -23,15 +25,22 @@ def get_connection():
 
 
 # 渡されたuseridをDBから削除する
-def del_userid(userid):
-    sql_delete = f"delete from userinfo where userid='{userid}'"
+def del_userinfo(userid):
+    sql_delete = f"delete from user_info where userid='{userid}'"
     operation_db(sql_delete)
 
+
 # 渡されたユーザ情報をDBに登録する
-def add_userid(department, subject, userid):
-    sql_add = f"insert into userinfo (department, subject, userid) values ('{department}', '{subject}', '{userid}')"
+def add_userinfo(major, userid):
+    sql_add = f"insert into user_info (major, userid) values ('{major}', '{userid}')"
     operation_db(sql_add)
 
+
+# 渡されたuseridのdepartmentを返却
+def get_usermajor(userid):
+    sql_search = f"select major from user_info where userid='{userid}'"
+    user_major = get_userinfo_list(sql_search)
+    return user_major[0][0]
 
 
 if __name__ == "__main__":
