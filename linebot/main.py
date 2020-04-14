@@ -12,9 +12,10 @@ from linebot.models import (
     RichMenu,RichMenuSize,RichMenuArea,RichMenuBounds,CarouselTemplate,CarouselColumn,PostbackTemplateAction,BubbleContainer,BoxComponent,TextComponent,ImageComponent,
     FlexSendMessage,FlexSendMessage,CarouselContainer)
 
-from database.syllabus import get_connection, get_lecture_list, search_lecture_info
-from func import gen_card_syllabus
-from user_db import get_usermajor, del_userinfo, add_userinfo
+from database.syllabus_db import search_lecture_info
+from database.user_db import get_userinfo_list, del_userinfo, add_userinfo
+from database.onihotoke_db import searchTeacher, searchLecture, searchAll
+from func import gen_card_syllabus, gen_card_onihotoke
 
 app = Flask(__name__)
 
@@ -50,6 +51,18 @@ def callback():
     return 'OK'
 
 
+#####################################################################################
+@handler.add(FollowEvent)
+def handle_follow(event):
+    line_bot_api.reply_message(
+            event.reply_token,
+            [TextSendMessage(text="友だち追加ありがとうございます。\n\n"),
+            TextSendMessage(
+            text="下のボタンから学部を選択してください。\n\n学部を間違えて登録した際は、画面下部のメニューバーより再登録することができます。",
+            quick_reply=QuickReply(
+                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
+            ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
+
 ################################################################################################
 @handler.add(PostbackEvent)
 def on_postback(event):
@@ -68,22 +81,9 @@ def on_postback(event):
                 FlexSendMessage(
                     alt_text='hello',
                     contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info])))
-
     else: # ユーザ情報をDBに格納
         user_major = post_data
         add_userinfo(user_major, user_id)
-
-#####################################################################################
-@handler.add(FollowEvent)
-def handle_follow(event):
-    line_bot_api.reply_message(
-            event.reply_token,
-            [TextSendMessage(text="友だち追加ありがとうございます。\n\n"),
-            TextSendMessage(
-            text="下のボタンから学部を選択してください。\n\n学部を間違えて登録した際は、画面下部のメニューバーより再登録することができます。",
-            quick_reply=QuickReply(
-                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
-            ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
 
 #####################################################################################
 @handler.add(MessageEvent, message=TextMessage)
@@ -103,6 +103,66 @@ def handle_message(event):
                     items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
                 ))])
 
+    #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
+    if "_" not in text or "でもう一度探す" in text:
+        if "でもう一度探す" in text:
+            text = text.split("_")[0]
+
+        teacherList = searchTeacher(text, False)#教員列からワードを検索
+        lectureList = searchLecture(text, False)#講義列からワードを検索
+        kibutsuList = []#2つのリストを結合　1つは空であるはず.
+        kibutsuList.extend(teacherList)
+        kibutsuList.extend(lectureList)
+
+        #検索結果が空でないとき,その検索結果をlabelにもつボタンを送信.
+        if kibutsuList:
+            #kibutsuListの要素数が20を超えないようにする.
+            if len(kibutsuList)>19:
+                kibutsuList = sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+            kibutsuList.extend(["でもう一度探す"])#20個目
+            buttons_templates = []
+            roop = (len(kibutsuList)+3)//4    #最大4つまで表示できるテンプレートを何回表示すればいいか.
+
+            for i in range(roop):#その回数だけ回す.
+                if i==roop-1:#最後は4つ以下になるからスライス部分を変える必要あり.
+                    buttons_templates.append(ButtonsTemplate(
+                        title='講義名を選択してください', text='choose the lecture name', actions=[
+                            MessageAction(label= text + " " + name, text= text + "_" + name) for name in kibutsuList[4*i:]
+                            ]))
+                    break
+                buttons_templates.append(ButtonsTemplate(
+                    title='講義名を選択してください', text='choose the lecture name', actions=[
+                        MessageAction(label= text + " " + name, text= text + "_" + name) for name in kibutsuList[4*i:4*(i+1)]
+                        ]))
+            try:
+                line_bot_api.reply_message(event.reply_token,
+                    [TemplateSendMessage(alt_text='講義を選択してください', template=buttons_template) for buttons_template in buttons_templates])
+               #record_keyword(text)
+
+            except LineBotApiError:
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
+                #record_error(text)
+
+        #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
+        elif "_" in text:
+            texts = text.split("_")#『教官名_講義名』　という入力を期待している
+            kibutsuList = searchAll(texts[0], texts[1])#講義情報の辞書のリスト
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text='hello',
+                    contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
+
+        #検索結果が空だったとき、その旨をユーザーに送信
+        else :
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
+                \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
+            #record_notExist(text)
+
+        
 
 #####################################################################################
 
@@ -118,19 +178,19 @@ rich_menu_to_create = RichMenu(
             action=PostbackAction(data="人間論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=0, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=0, width=625, height=843),
             action=PostbackAction(data="人文科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=625, y=0, width=625, height=843),
+            bounds=RichMenuBounds(x=0, y=843, width=625, height=843),
             action=PostbackAction(data="自然論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=625, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
             action=PostbackAction(data="自然科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=0, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
             action=PostbackAction(data="社会論")
         ),
         RichMenuArea(
@@ -138,12 +198,8 @@ rich_menu_to_create = RichMenu(
             action=PostbackAction(data="社会科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1875, y=0, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=843, width=625, height=1686),
             action=PostbackAction(data="英語")
-        ),
-        RichMenuArea(
-            bounds=RichMenuBounds(x=1875, y=843, width=625, height=843),
-            action=PostbackAction(data="ヘルプ")
         )
     ]
 )
