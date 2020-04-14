@@ -8,7 +8,7 @@ import pandas as pd
 import re
 
 #DBからDFを作成
-dsn = "postgres://fphbhkqbtrhhih:02d007904f1669ddcea59b5132c7f1c95a0981a3bf3bd0ca2d390584daf05f79@ec2-75-101-133-29.compute-1.amazonaws.com:5432/d7viglmaohhb63"
+dsn = TONPE_DB
 connection = psycopg2.connect(dsn)
 df_ass = pd.read_sql(sql='select * from assessments;', con=connection)
 df_lec = pd.read_sql(sql='select * from lectures;', con=connection)
