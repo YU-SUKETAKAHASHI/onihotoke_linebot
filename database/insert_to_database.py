@@ -79,14 +79,11 @@ columns = [
           ]
 
 df_completed = pd.DataFrame(completed, columns=columns)
-#print(df_completed)
 
-#DataFrameからpostgresにテーブルを作成
-# engine = create_engine("postgresql://postgres:thys60918@localhost:5432/old_kibutsuhyou")
-# df_completed.to_sql("lecture_assessments", engine, if_exists="append", index=False)
 
-print("now inserting")
+
 #heroku postgresにテーブルを作成
+print("now inserting")
 DATABASE_URL = os.environ["DATABASE_URL"]
 engine = create_engine(DATABASE_URL)
 df_completed.to_sql("lecture_assessments", engine, if_exists="append", index=False)
