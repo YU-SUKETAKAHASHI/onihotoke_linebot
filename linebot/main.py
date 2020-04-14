@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, abort
+import requests
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -23,8 +24,6 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
-
-
 major_list = ["文学部", "教育学部", "法学部", "経済学部", "理学部", "医学部", "歯学部", "薬学部", "工学部", "農学部"]
 
 ################################################################################################
@@ -50,7 +49,6 @@ def callback():
 
     return 'OK'
 
-
 #####################################################################################
 @handler.add(FollowEvent)
 def handle_follow(event):
@@ -62,6 +60,12 @@ def handle_follow(event):
             quick_reply=QuickReply(
                 items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
+
+    # slackに投稿
+    SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_NEW_COMER"]
+    profile = line_bot_api.get_profile(event.source.user_id)
+    text = "表示名:{}\nユーザID:{}\n画像のURL:{}\nステータスメッセージ:{}".format(profile.display_name, profile.user_id, profile.picture_url, profile.status_message)
+    requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':text}))
 
 ################################################################################################
 @handler.add(PostbackEvent)
@@ -103,11 +107,11 @@ def handle_message(event):
                     items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
                 ))])
 
+
     #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
-    if "_" not in text or "でもう一度探す" in text:
+    elif "_" not in text or "でもう一度探す" in text:
         if "でもう一度探す" in text:
             text = text.split("_")[0]
-
         teacherList = searchTeacher(text, False)#教員列からワードを検索
         lectureList = searchLecture(text, False)#講義列からワードを検索
         kibutsuList = []#2つのリストを結合　1つは空であるはず.
@@ -137,32 +141,67 @@ def handle_message(event):
             try:
                 line_bot_api.reply_message(event.reply_token,
                     [TemplateSendMessage(alt_text='講義を選択してください', template=buttons_template) for buttons_template in buttons_templates])
-               #record_keyword(text)
-
-            except LineBotApiError:
+                # slackに報告
+                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
+                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
+            except:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
-                #record_error(text)
-
-        #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
-        elif "_" in text:
-            texts = text.split("_")#『教官名_講義名』　という入力を期待している
-            kibutsuList = searchAll(texts[0], texts[1])#講義情報の辞書のリスト
-
-            line_bot_api.reply_message(
-                event.reply_token,
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
-
-        #検索結果が空だったとき、その旨をユーザーに送信
-        else :
+                # slackに報告
+                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
+                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
+        
+        # 該当する講義がなかったとき
+        else:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
-                \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
-            #record_notExist(text)
+                \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\nhttps://twitter.com/reiwachan_'))
+            # slackに報告
+            SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
+            requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
 
 
+    #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
+    elif "_" in text:
+        texts = text.split("_")#『教官名_講義名』　という入力を期待している
+        kibutsuList = searchAll(texts[0], texts[1])#講義情報の辞書のリスト
+        
+        if kibutsuList :
+            try:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
+                # slackに報告
+                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
+                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
+            except:
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
+                # slackに報告
+                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
+                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
+
+        # 該当する講義がなかったとき
+        else:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
+                \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\nhttps://twitter.com/reiwachan_'))
+            # slackに報告
+            SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
+            requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
+
+
+    #検索結果が空だったとき、その旨をユーザーに送信
+    else :
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text='教官名または講義名を入力してください.\
+            \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\nhttps://twitter.com/reiwachan_'))
+        # slackに報告
+        SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
+        requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"たぶん適当な検索ワード : " + text}))
 
 #####################################################################################
 
