@@ -12,7 +12,7 @@ from linebot.models import (
     RichMenu,RichMenuSize,RichMenuArea,RichMenuBounds,CarouselTemplate,CarouselColumn,PostbackTemplateAction,BubbleContainer,BoxComponent,TextComponent,ImageComponent,
     FlexSendMessage,FlexSendMessage,CarouselContainer)
 
-from database.operate import get_connection, get_lecture_list, search_lecture_info
+from database.syllabus import get_connection, get_lecture_list, search_lecture_info
 from func import gen_card_syllabus
 from user_db import get_usermajor, del_userinfo, add_userinfo
 
@@ -118,19 +118,19 @@ rich_menu_to_create = RichMenu(
             action=PostbackAction(data="人間論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=0, width=625, height=843),
+            bounds=RichMenuBounds(x=0, y=843, width=625, height=843),
             action=PostbackAction(data="人文科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=0, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=625, y=0, width=625, height=843),
             action=PostbackAction(data="自然論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=625, y=843, width=625, height=843),
             action=PostbackAction(data="自然科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=0, width=625, height=843),
             action=PostbackAction(data="社会論")
         ),
         RichMenuArea(
@@ -138,8 +138,12 @@ rich_menu_to_create = RichMenu(
             action=PostbackAction(data="社会科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=1686),
+            bounds=RichMenuBounds(x=1875, y=0, width=625, height=843),
             action=PostbackAction(data="英語")
+        ),
+        RichMenuArea(
+            bounds=RichMenuBounds(x=1875, y=843, width=625, height=843),
+            action=PostbackAction(data="ヘルプ")
         )
     ]
 )
