@@ -162,7 +162,7 @@ def handle_message(event):
                 \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\n講義数が多い場合はその一部を表示しています.\nhttps://twitter.com/reiwachan_'))
             #record_notExist(text)
 
-        
+
 
 #####################################################################################
 
@@ -171,34 +171,38 @@ rich_menu_to_create = RichMenu(
     selected = False,
     name = 'richmenu for randomchat',
     # chat_bar_text = 'id_default',
-    chat_bar_text = "選択してください",
+    chat_bar_text = "基幹科目等の検索はこちら",
     areas=[
         RichMenuArea(
-            bounds=RichMenuBounds(x=0, y=0, width=625, height=843),
+            bounds=RichMenuBounds(x=0, y=93, width=675, height=750),
             action=PostbackAction(data="人間論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=0, width=625, height=843),
+            bounds=RichMenuBounds(x=0, y=843, width=675, height=750),
             action=PostbackAction(data="人文科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=0, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=675, y=93, width=575, height=750),
             action=PostbackAction(data="自然論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=675, y=843, width=575, height=750),
             action=PostbackAction(data="自然科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=93, width=575, height=750),
             action=PostbackAction(data="社会論")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=843),
+            bounds=RichMenuBounds(x=1250, y=843, width=575, height=750),
             action=PostbackAction(data="社会科学")
         ),
         RichMenuArea(
-            bounds=RichMenuBounds(x=1250, y=843, width=625, height=1686),
+            bounds=RichMenuBounds(x=1825, y=93, width=675, height=750),
+            action=PostbackAction(data="英語")
+        ),
+        RichMenuArea(
+            bounds=RichMenuBounds(x=1825, y=843, width=675, height=750),
             action=PostbackAction(data="英語")
         )
     ]
@@ -207,7 +211,7 @@ richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
 
 # upload an image for rich menu
 # path_default = "job_hisyo_woman_kochira__.png"
-path = "onihotoke.jpg"
+path = "rich_menu.png"
 with open(path, 'rb') as f:
     line_bot_api.set_rich_menu_image(richMenuId, "image/png", f)
 
@@ -218,9 +222,9 @@ line_bot_api.set_default_rich_menu(richMenuId)
 #--------------------------------------------------------------------------------------------------------
 
 #ngrokでデバック用
-if __name__ == "__main__":
-    app.run(debug=True)
-
 # if __name__ == "__main__":
-#     port = int(os.environ.get('PORT', 8080))
-#     app.run(host ='0.0.0.0',port = port, debug=True)
+#     app.run(debug=True)
+
+if __name__ == "__main__":
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host ='0.0.0.0',port = port, debug=True)
