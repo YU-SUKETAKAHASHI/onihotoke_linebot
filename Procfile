@@ -1,1 +1,1 @@
-web: python oneday_kibutsu.py
+web: python linebot/main.py
