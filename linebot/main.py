@@ -26,7 +26,7 @@ LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-major_list = ["文学部":None,
+major_list = {"文学部":None,
               "教育学部":None,
               "法学部":None,
               "経済学部":None, 
@@ -35,7 +35,7 @@ major_list = ["文学部":None,
               "歯学部":None, 
               "薬学部":None, 
               "工学部":["機知","情物","化バイ","材料","建築"], 
-              "農学部":None]
+              "農学部":None}
 
 ################################################################################################
 @app.route("/callback", methods=['POST'])
