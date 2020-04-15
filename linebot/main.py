@@ -70,7 +70,7 @@ def handle_follow(event):
             TextSendMessage(
             text="下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。",
             quick_reply=QuickReply(
-                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list.key()]
+                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list.keys()]
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
 
     # slackに投稿
