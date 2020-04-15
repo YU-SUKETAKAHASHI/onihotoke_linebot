@@ -57,15 +57,15 @@ def callback():
 def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="""友達追加ありがとうございます。\n
-                                    東北大学鬼仏LINEbotです。\n
-                                    公開から半年、さらにパワーアップしてリニューアルです！\n
-                                    従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！\n
-                                    所属学部を登録することで、自分が履修できる講義が一目瞭然！\n
-                                    ～使い方～\n
-                                    「講義名」、または「教官の名前」を送信してください。\n
-                                    みなさんの鬼仏情報を見ることができます。\n
-                                    さらに下のメニューバー「基幹科目等の検索はこちら」から、自分の所属学部で履修できる基幹科目の講義を検索できます。\n
+            [TextSendMessage(text="""友達追加ありがとうございます。
+                                    東北大学鬼仏LINEbotです。
+                                    公開から半年、さらにパワーアップしてリニューアルです！
+                                    従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！
+                                    所属学部を登録することで、自分が履修できる講義が一目瞭然！
+                                    ～使い方～
+                                    「講義名」、または「教官の名前」を送信してください。
+                                    みなさんの鬼仏情報を見ることができます。
+                                    さらに下のメニューバー「基幹科目等の検索はこちら」から、自分の所属学部で履修できる基幹科目の講義を検索できます。
                                     その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください。"""),
             TextSendMessage(
             text="下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。",
@@ -107,13 +107,26 @@ def on_postback(event):
     elif post_data=="ヘルプ":
         line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text="""学部の再登録をしたいとき・・・\n
-                                        「学部再登録」と送信してください。もう一度ボタンが出現します。\n
-                                        さらに詳しい使い方が知りたいとき・・・\n
-                                        「使い方」と送信してください。詳しい使い方を説明します。\n
-                                        ご感想、ご要望・・・\n
-                                        「送信フォーム」と送信してください。Googleフォームが現れ、匿名で送信できます。\n
-                                        さらに経済学部に特化した「ゼミ協（東北大経済学部）」という情報発信LINEbotもあります。経済学部の方は「ゼミ協」と送信してみてください！"""))
+                [TextSendMessage(text="""学部の再登録をしたいとき・・・
+                                        「学部再登録」と送信してください。もう一度ボタンが出現します。
+                                        さらに詳しい使い方が知りたいとき・・・
+                                        「使い方」と送信してください。詳しい使い方を説明します。
+                                        ご感想、ご要望・・・
+                                        「送信フォーム」と送信してください。Googleフォームが現れ、匿名で送信できます。
+                                        さらに経済学部に特化した「ゼミ協（東北大経済学部）」という情報発信LINEbotもあります。経済学部の方は「ゼミ協」と送信してみてください！"""),
+                TemplateSendMessage(
+                    alt_text = "選択ボタン",
+                    template = ButtonsTemplate(
+                    text="以下から選択してください",
+                    image_size="cover",
+                    actions=[
+                            MessageAction(text="学部再登録",
+                                        label="学部再登録"),
+                            MessageAction(text="使い方",
+                                        label="使い方"),
+                            MessageAction(text="送信フォーム",
+                                        label="送信フォーム"),
+                            ])))])                       
 
     # 絞り込み検索
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="C":
@@ -185,14 +198,12 @@ def handle_message(event):
                 alt_text = "送信フォーム",
                 template = ButtonsTemplate(
                 text="送信フォーム",
-                #title="タイトルですよ",
                 image_size="cover",
-                #thumbnail_image_url="https://2.bp.blogspot.com/-AZFzUVfdSFs/VS0EmL8aOSI/AAAAAAAAtFA/jYAPLgFKcfM/s800/car_drinking.png",
                 actions=[
-                    URIAction(
-                        uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
-                        label="ご感想、ご要望はこちら"
-                    )])))
+                        URIAction(
+                            uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
+                            label="ご感想、ご要望はこちら"
+                        )])))
 
 
 
