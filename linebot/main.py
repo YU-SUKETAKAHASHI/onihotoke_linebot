@@ -29,12 +29,12 @@ handler = WebhookHandler(LINE_CHANNEL_SECRET)
 major_list = {"文学部":None,
               "教育学部":None,
               "法学部":None,
-              "経済学部":None, 
-              "理学部":None, 
-              "医学部":None, 
-              "歯学部":None, 
-              "薬学部":None, 
-              "工学部":["機知","情物","化バイ","材料","建築"], 
+              "経済学部":None,
+              "理学部":None,
+              "医学部":None,
+              "歯学部":None,
+              "薬学部":None,
+              "工学部":["機知","情物","化バイ","材料","建築"],
               "農学部":None}
 
 ################################################################################################
@@ -57,9 +57,18 @@ def callback():
 def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="友だち追加ありがとうございます。\n\n"),
+            [TextSendMessage(text="""友達追加ありがとうございます。\n
+                                    東北大学鬼仏LINEbotです。\n
+                                    公開から半年、さらにパワーアップしてリニューアルです！\n
+                                    従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！\n
+                                    所属学部を登録することで、自分が履修できる講義が一目瞭然！\n
+                                    ～使い方～\n
+                                    「講義名」、または「教官の名前」を送信してください。\n
+                                    みなさんの鬼仏情報を見ることができます。\n
+                                    さらに下のメニューバー「基幹科目等の検索はこちら」から、自分の所属学部で履修できる基幹科目の講義を検索できます。\n
+                                    その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください。"""),
             TextSendMessage(
-            text="下のボタンから学部を選択してください。\n\n学部を間違えて登録した際は、画面下部のメニューバーより再登録することができます。",
+            text="下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。",
             quick_reply=QuickReply(
                 items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list.key()]
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
@@ -95,6 +104,17 @@ def on_postback(event):
                 items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list["工学部"]]
             ))])
 
+    elif post_data=="ヘルプ":
+        line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="""学部の再登録をしたいとき・・・\n
+                                        「学部再登録」と送信してください。もう一度ボタンが出現します。\n
+                                        さらに詳しい使い方が知りたいとき・・・\n
+                                        「使い方」と送信してください。詳しい使い方を説明します。\n
+                                        ご感想、ご要望・・・\n
+                                        「送信フォーム」と送信してください。Googleフォームが現れ、匿名で送信できます。\n
+                                        さらに経済学部に特化した「ゼミ協（東北大経済学部）」という情報発信LINEbotもあります。経済学部の方は「ゼミ協」と送信してみてください！"""))
+
     # 絞り込み検索
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="C":
         lecture_group = post_data
@@ -104,7 +124,7 @@ def on_postback(event):
         lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
         print(lecture_info)
         print(user_major=="工" and post_data=="自然科学")
-        if user_major=="工" and post_data=="自然科学":
+        if (user_major=="工" or user_major=="理") and post_data=="自然科学":
              line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text="件数が多いため表示できません"))
@@ -144,7 +164,7 @@ def handle_message(event):
 
         line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="現在登録されていた学部、研究科は削除されました。"),
+            [TextSendMessage(text="現在登録されていた学部は削除されました。"),
                 TextSendMessage(
                 text="もう一度下のボタンから学部を選択してください。",
                 quick_reply=QuickReply(
@@ -154,11 +174,25 @@ def handle_message(event):
     if text == "使い方":
         line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text=""),
-            TextSendMessage(text="")
+            [TextSendMessage(text="まんじい"),
+            TextSendMessage(text="まんじい")
             ])
 
-
+    if text == "送信フォーム":
+        line_bot_api.reply_message(
+            event.reply_token,
+            TemplateSendMessage(
+                alt_text = "送信フォーム",
+                template = ButtonsTemplate(
+                text="送信フォーム",
+                #title="タイトルですよ",
+                image_size="cover",
+                #thumbnail_image_url="https://2.bp.blogspot.com/-AZFzUVfdSFs/VS0EmL8aOSI/AAAAAAAAtFA/jYAPLgFKcfM/s800/car_drinking.png",
+                actions=[
+                    URIAction(
+                        uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
+                        label="ご感想、ご要望はこちら"
+                    )])))
 
 
 
