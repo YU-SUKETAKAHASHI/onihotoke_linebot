@@ -191,15 +191,6 @@ def handle_message(event):
         texts = text.split("_")#『教官名_講義名』　という入力を期待している
         kibutsuList = searchAll(texts[0], texts[1])#講義情報の辞書のリスト
         print(kibutsuList)
-        """{'subject': '物理学D',
-         'teacher': '井口敏',
-         'difficulty': '鬼',
-         'worth': 'あり',
-          'comment': '授業の雰囲気の緩さに反してテストやレポートの難易度がめちゃくちゃ高い。授業範囲を平気で越えてくる。た だし、浮くだけならレポートを出していればなんとかなる',
-          'test': 'あり',
-           'report': 'あり',
-           'attendance': 'なし',
-           'post date': '2019-03-25'}"""
         if kibutsuList :
             try:
                 line_bot_api.reply_message(
@@ -276,7 +267,7 @@ rich_menu_to_create = RichMenu(
         ),
         RichMenuArea(
             bounds=RichMenuBounds(x=1825, y=843, width=675, height=750),
-            action=PostbackAction(data="英語")
+            action=PostbackAction(data="ヘルプ")
         )
     ]
 )
