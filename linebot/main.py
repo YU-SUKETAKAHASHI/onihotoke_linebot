@@ -86,9 +86,14 @@ def on_postback(event):
         print(lecture_info)
         line_bot_api.reply_message(
                 event.reply_token,
+                [FlexSendMessage(
+                    alt_text='hello',
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]]),
                 FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info])))
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]])]))
+
+
     else: # ユーザ情報をDBに格納
         user_major = post_data[0]
         add_userinfo(user_major, user_id)
