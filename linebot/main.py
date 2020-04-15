@@ -127,48 +127,48 @@ def on_postback(event):
                                         label="使い方"),
                             MessageAction(text="送信フォーム",
                                         label="送信フォーム"),
-                            ]))
+                            ]))])
 
     # 絞り込み検索
 elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
-    lecture_group = post_data
-    print(lecture_group)
-    user_major = get_usermajor(user_id)
-    print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
-    lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
-    print(lecture_info)
-    print(user_major=="工" and post_data=="自然科学")
-    if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
+        lecture_group = post_data
+        print(lecture_group)
+        user_major = get_usermajor(user_id)
+        print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
+        lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
+        print(lecture_info)
+        print(user_major=="工" and post_data=="自然科学")
+        if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
+             line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text="件数が多いため表示できません"))
+
+        elif len(lecture_info) > 10:
             line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="件数が多いため表示できません"))
+                    event.reply_token,
+                    [FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
+                    FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+        else:
+            line_bot_api.reply_message(
+                    event.reply_token,
+                    FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
 
-    elif len(lecture_info) > 10:
+
+    else: # ユーザ情報をDBに格納
+        if post_data[-1] == "部":
+            user_major = post_data[0]
+        else:
+            user_major = post_data
+        add_userinfo(user_major, user_id)
         line_bot_api.reply_message(
                 event.reply_token,
-                [FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
-    else:
-        line_bot_api.reply_message(
-                event.reply_token,
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
-
-
-else: # ユーザ情報をDBに格納
-    if post_data[-1] == "部":
-        user_major = post_data[0]
-    else:
-        user_major = post_data
-    add_userinfo(user_major, user_id)
-    line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=post_data + "で登録しました！"))
+                TextSendMessage(text=post_data + "で登録しました！"))
 
 #####################################################################################
 @handler.add(MessageEvent, message=TextMessage)
@@ -209,8 +209,6 @@ def handle_message(event):
                             label="ご感想、ご要望はこちら"
                         )])))
 
-
-
     #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
     elif "_" not in text or "でもう一度探す" in text:
         if "でもう一度探す" in text:
@@ -225,7 +223,7 @@ def handle_message(event):
         if kibutsuList:
             #kibutsuListの要素数が20を超えないようにする.
             if len(kibutsuList)>19:
-                kibutsuList = random.sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+                kibutsuList = sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
             kibutsuList.extend(["でもう一度探す"])#20個目
             buttons_templates = []
             roop = (len(kibutsuList)+3)//4    #最大4つまで表示できるテンプレートを何回表示すればいいか.
