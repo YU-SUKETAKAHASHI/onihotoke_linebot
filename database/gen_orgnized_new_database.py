@@ -39,10 +39,6 @@ df_new["posted date"] = [str(pdv)[2:12] for pdv in post_date_values]
 
 print(df_new["worth"])
 
-#DataFrameからpostgresにテーブルを作成
-#engine = create_engine("postgresql://postgres:thys60918@localhost:5432/old_kibutsuhyou")
-#df_new.to_sql("lecture_assessments", con=engine, if_exists="append", index=False)
-
 #heroku postgresにテーブルを作成
 DATABASE_URL = os.environ["DATABASE_URL"]
 engine = create_engine(DATABASE_URL)
