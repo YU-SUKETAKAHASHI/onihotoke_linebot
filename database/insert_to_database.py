@@ -14,7 +14,7 @@ from time import sleep
 
 
 url_1= "https://www.kibutu.com/search2.php?number="
-url_2 = "&amp;university=tohoku"
+url_2 = "&university=tohoku"
 
 print(len(ids))
 
@@ -24,10 +24,11 @@ for id_num in ids:
     html_file = urlopen(full_url)
     soup = bs(html_file, "html.parser")
     tables = soup.find_all("table")
+    # print(tables[len(tables)-1])
     #print(tables)
     describes.append(tables[len(tables)-1] if tables else "")#後ろから２番目のtableがお目当て
     print(id_num," done~")
-    sleep(0.5)
+    sleep(0.1)
 
 #print("1==================================================")
 
