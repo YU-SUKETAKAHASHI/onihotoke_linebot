@@ -162,10 +162,8 @@ def on_postback(event):
     else: # ユーザ情報をDBに格納
         if user_major[-1] == "部":
             user_major = post_data[0]
-        elif user_major == "化バイ":
+        else:
             user_major = post_data
-        else :
-            user_major == post_data[2]
         add_userinfo(user_major, user_id)
         line_bot_api.reply_message(
                 event.reply_token,
