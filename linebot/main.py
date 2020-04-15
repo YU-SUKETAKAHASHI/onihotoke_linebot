@@ -131,44 +131,44 @@ def on_postback(event):
 
     # 絞り込み検索
 elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
-        lecture_group = post_data
-        print(lecture_group)
-        user_major = get_usermajor(user_id)
-        print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
-        lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
-        print(lecture_info)
-        print(user_major=="工" and post_data=="自然科学")
-        if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
-             line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text="件数が多いため表示できません"))
-
-        elif len(lecture_info) > 10:
+    lecture_group = post_data
+    print(lecture_group)
+    user_major = get_usermajor(user_id)
+    print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
+    lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
+    print(lecture_info)
+    print(user_major=="工" and post_data=="自然科学")
+    if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
             line_bot_api.reply_message(
-                    event.reply_token,
-                    [FlexSendMessage(
-                        alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
-                    FlexSendMessage(
-                        alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
-        else:
-            line_bot_api.reply_message(
-                    event.reply_token,
-                    FlexSendMessage(
-                        alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
+                event.reply_token,
+                TextSendMessage(text="件数が多いため表示できません"))
 
-
-    else: # ユーザ情報をDBに格納
-        if post_data[-1] == "部":
-            user_major = post_data[0]
-        else:
-            user_major = post_data
-        add_userinfo(user_major, user_id)
+    elif len(lecture_info) > 10:
         line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=post_data + "で登録しました！"))
+                [FlexSendMessage(
+                    alt_text='hello',
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
+                FlexSendMessage(
+                    alt_text='hello',
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+    else:
+        line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text='hello',
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
+
+
+else: # ユーザ情報をDBに格納
+    if post_data[-1] == "部":
+        user_major = post_data[0]
+    else:
+        user_major = post_data
+    add_userinfo(user_major, user_id)
+    line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=post_data + "で登録しました！"))
 
 #####################################################################################
 @handler.add(MessageEvent, message=TextMessage)
