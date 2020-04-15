@@ -84,14 +84,21 @@ def on_postback(event):
         print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
         lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
         print(lecture_info)
-        line_bot_api.reply_message(
-                event.reply_token,
-                [FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
-                FlexSendMessage(
-                    alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+        if len(lecture_info) > 10:
+            line_bot_api.reply_message(
+                    event.reply_token,
+                    [FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
+                    FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+        else:
+            line_bot_api.reply_message(
+                    event.reply_token,
+                    FlexSendMessage(
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10])))
 
 
     else: # ユーザ情報をDBに格納
