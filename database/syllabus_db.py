@@ -27,11 +27,11 @@ def search_lecture_info(group, classes):
         辞書型の講義データのリスト
     """
 
-    sql = f"select * from lecture_info where group='{group}' and classes like '%{classes}%' "
+    sql = f"select * from lecture_info where group_='{group}' and classes like '%{classes}%' "
     lecture_info = get_lecture_list(sql)
 
     if group in "文教法経":
-        sql = f"select * from lecture_info where group='{group}' and classes like '文系%' "
+        sql = f"select * from lecture_info where group_='{group}' and classes like '文系%' "
         bunkei_lecture_info = get_lecture_list(sql)
         lecture_info.extend(bunkei_lecture_info)
 

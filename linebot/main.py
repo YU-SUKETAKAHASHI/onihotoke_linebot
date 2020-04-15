@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, abort
 import requests
+import json
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -11,10 +12,10 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, FollowEvent,PostbackEvent,TextMessage, TextSendMessage,ButtonsTemplate,TemplateSendMessage,ImageMessage,MessageAction,URIAction,PostbackAction,
     RichMenu,RichMenuSize,RichMenuArea,RichMenuBounds,CarouselTemplate,CarouselColumn,PostbackTemplateAction,BubbleContainer,BoxComponent,TextComponent,ImageComponent,
-    FlexSendMessage,FlexSendMessage,CarouselContainer)
+    FlexSendMessage,FlexSendMessage,CarouselContainer,QuickReply,QuickReplyButton,UnfollowEvent)
 
 from database.syllabus_db import search_lecture_info
-from database.user_db import get_userinfo_list, del_userinfo, add_userinfo
+from database.user_db import get_userinfo_list, del_userinfo, add_userinfo,get_usermajor,del_userinfo
 from database.onihotoke_db import searchTeacher, searchLecture, searchAll
 from func import gen_card_syllabus, gen_card_onihotoke
 
@@ -29,21 +30,13 @@ major_list = ["文学部", "教育学部", "法学部", "経済学部", "理学�
 ################################################################################################
 @app.route("/callback", methods=['POST'])
 def callback():
-    # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
-    # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
-    # handle webhook body
     try:
         handler.handle(body, signature)
-    except LineBotApiError as e:
-        print("Got exception from LINE Messaging API: %s\n" % e.message)
-        for m in e.error.details:
-            print("  %s: %s" % (m.property, m.message))
-        print("\n")
     except InvalidSignatureError:
         abort(400)
 
@@ -68,6 +61,15 @@ def handle_follow(event):
     requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':text}))
 
 ################################################################################################
+
+# ブロックされたときにDBからユーザー情報を削除
+@handler.add(UnfollowEvent)
+def handle_unfollow(event):
+    userid = event.source.user_id
+    del_userinfo(userid)
+
+################################################################################################
+
 @handler.add(PostbackEvent)
 def on_postback(event):
     user_id = event.source.user_id
@@ -77,17 +79,22 @@ def on_postback(event):
     # 絞り込み検索
     if post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
-        user_major = get_usermajor(userid) #useridを受け取ってDBからそのユーザの所属を返す
+        print(lecture_group)
+        user_major = get_usermajor(user_id)
+        print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
         lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
-
+        print(lecture_info)
         line_bot_api.reply_message(
                 event.reply_token,
                 FlexSendMessage(
                     alt_text='hello',
                     contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info])))
     else: # ユーザ情報をDBに格納
-        user_major = post_data
+        user_major = post_data[0]
         add_userinfo(user_major, user_id)
+        line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=post_data + "で登録しました！"))
 
 #####################################################################################
 @handler.add(MessageEvent, message=TextMessage)
@@ -149,7 +156,7 @@ def handle_message(event):
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
-        
+
         # 該当する講義がなかったとき
         else:
             line_bot_api.reply_message(
@@ -165,7 +172,16 @@ def handle_message(event):
     elif "_" in text:
         texts = text.split("_")#『教官名_講義名』　という入力を期待している
         kibutsuList = searchAll(texts[0], texts[1])#講義情報の辞書のリスト
-        
+        print(kibutsuList)
+        """{'subject': '物理学D',
+         'teacher': '井口敏',
+         'difficulty': '鬼',
+         'worth': 'あり',
+          'comment': '授業の雰囲気の緩さに反してテストやレポートの難易度がめちゃくちゃ高い。授業範囲を平気で越えてくる。た だし、浮くだけならレポートを出していればなんとかなる',
+          'test': 'あり',
+           'report': 'あり',
+           'attendance': 'なし',
+           'post date': '2019-03-25'}"""
         if kibutsuList :
             try:
                 line_bot_api.reply_message(
@@ -250,9 +266,9 @@ richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
 
 # upload an image for rich menu
 # path_default = "job_hisyo_woman_kochira__.png"
-path = "rich_menu2.png"
-with open(path, 'rb') as f:
-    line_bot_api.set_rich_menu_image(richMenuId, "image/png", f)
+# path = "rich_menu.jpg"
+with open("static/rich_menu.jpg", 'rb') as f:
+    line_bot_api.set_rich_menu_image(richMenuId, "image/jpeg", f)
 
 #########################################################################################
 
@@ -266,4 +282,4 @@ line_bot_api.set_default_rich_menu(richMenuId)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8080))
-    app.run(host ='0.0.0.0',port = port, debug=True)
+    app.run(host ='0.0.0.0',port = port)

@@ -1,8 +1,8 @@
 #シラバスからの検索
 def gen_card_syllabus(dic):
 
-"""
-  dic = {"subject":"思想と...",
+    """
+    dic = {"subject":"思想と...",
              "title":"現代における...",
              "teacher":"佐藤...",
              "code":"01234",
@@ -10,18 +10,31 @@ def gen_card_syllabus(dic):
              "day_time":"火１",
              "classes":"医保..." }
 
-==Return==
-    origin_json :取得したdicのデータでテンプレから変更したjsonデータ
+    ==Return==
+        origin_json :取得したdicのデータでテンプレから変更したjsonデータ
 
-"""
+    """
+    """
+    ['人間論',
+    '思想と倫理の世界(World of Thoughts and Ethics)',
+    '現代における人間の探究―哲学的人間学入門―_x000D_/Exploration into Human Beings in the Present Age: An Introduction into Philosophical Anthropology',
+    '佐藤\u3000透',
+    'CB21110',
+    '1セメ',
+    '火1',
+    '医保歯薬工',
+    None]
+    """
 
-    subject = dic["subject"]
-    title = dic["title"]
-    teacher = dic["teacher"]
-    code = dic["code"]
-    semester = dic["semester"]
-    day_time = dic["day_time"]
-    classes = dic["classes"]
+
+
+    subject = dic[1]
+    title = dic[2]
+    teacher = dic[3].replace('\u3000', ' ')
+    code = dic[4]
+    semester = dic[5]
+    day_time = dic[6]
+    classes = dic[7]
 
     dcit_card = {
   "type": "bubble",
@@ -176,21 +189,21 @@ def gen_card_syllabus(dic):
 
 def gen_card_onihotoke(dic):
 
-"""
-dic = {'subject': '思想と...',
-    'teacher': '佐藤...',
-    'difficulty': '仏',
-    'worth': 'あり',
-    'comment': '非常に有意義でした',
-    'test': 'なーい',
-    'report': '重すぎます',
-    'attendance': '毎回',
-    'postdate':'2020年04月13日'}
+    """
+    dic = {'subject': '思想と...',
+        'teacher': '佐藤...',
+        'difficulty': '仏',
+        'worth': 'あり',
+        'comment': '非常に有意義でした',
+        'test': 'なーい',
+        'report': '重すぎます',
+        'attendance': '毎回',
+        'post date':'2020年04月13日'}
 
-==Return==
-    origin_json :取得したdicのデータでテンプレから変更したjsonデータ
+    ==Return==
+        origin_json :取得したdicのデータでテンプレから変更したjsonデータ
 
-"""
+    """
 
     subject = dic["subject"]
     teacher = dic["teacher"]
@@ -199,7 +212,7 @@ dic = {'subject': '思想と...',
     test = dic["test"]
     report = dic["report"]
     attendance = dic["attendance"]
-    postdate = dic["postdate"]
+    postdate = dic["post date"]
     comment = dic["comment"]
 
     dict_card = {
