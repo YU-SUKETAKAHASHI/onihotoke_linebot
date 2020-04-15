@@ -160,6 +160,7 @@ def on_postback(event):
 
 
     else: # ユーザ情報をDBに格納
+        global user_major
         if user_major[-1] == "部":
             user_major = post_data[0]
         else:
