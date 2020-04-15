@@ -96,9 +96,9 @@ def on_postback(event):
         else:
             line_bot_api.reply_message(
                     event.reply_token,
-                    [FlexSendMessage(
+                    FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]))])
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
 
 
     else: # ユーザ情報をDBに格納
