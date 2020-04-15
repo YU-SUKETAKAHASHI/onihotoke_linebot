@@ -25,7 +25,17 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
-major_list = ["文学部", "教育学部", "法学部", "経済学部", "理学部", "医学部", "歯学部", "薬学部", "工学部", "農学部"]
+
+major_list = ["文学部":None,
+              "教育学部":None,
+              "法学部":None,
+              "経済学部":None, 
+              "理学部":None, 
+              "医学部":None, 
+              "歯学部":None, 
+              "薬学部":None, 
+              "工学部":["機知","情物","化バイ","材料","建築"], 
+              "農学部":None]
 
 ################################################################################################
 @app.route("/callback", methods=['POST'])
@@ -51,7 +61,7 @@ def handle_follow(event):
             TextSendMessage(
             text="下のボタンから学部を選択してください。\n\n学部を間違えて登録した際は、画面下部のメニューバーより再登録することができます。",
             quick_reply=QuickReply(
-                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
+                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list.key()]
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
 
     # slackに投稿
@@ -76,8 +86,17 @@ def on_postback(event):
     reply_token = event.reply_token
     post_data = event.postback.data
 
+    if post_data=="工学部":
+         line_bot_api.reply_message(
+            event.reply_token,
+            [TextSendMessage(
+            text="下のボタンから学科を選択してください。"
+            quick_reply=QuickReply(
+                items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list["工学部"]]
+            ))])
+
     # 絞り込み検索
-    if post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
+    elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
         print(lecture_group)
         user_major = get_usermajor(user_id)
