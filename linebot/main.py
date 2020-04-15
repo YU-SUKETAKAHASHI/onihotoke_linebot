@@ -129,7 +129,7 @@ def on_postback(event):
                             ]))])
 
     # 絞り込み検索
-    elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="C":
+elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
         print(lecture_group)
         user_major = get_usermajor(user_id)
@@ -340,7 +340,7 @@ rich_menu_to_create = RichMenu(
         ),
         RichMenuArea(
             bounds=RichMenuBounds(x=1825, y=93, width=675, height=750),
-            action=PostbackAction(data="英語C")
+            action=PostbackAction(data="外国語")
         ),
         RichMenuArea(
             bounds=RichMenuBounds(x=1825, y=843, width=675, height=750),
