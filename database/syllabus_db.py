@@ -31,7 +31,7 @@ def search_lecture_info(group, class_):
 
     if class_=="機知" or class_=="情物" or class_=="化バイ" or class_=="材料" or class_=="建築":
         sql = f"select * from lecture_info where group_='{group}' and classes like '%工%' "
-        get_lecture_list(sql)
-        lecture_info.extend(bunkei_lecture_info)
+        lecture_info_ = get_lecture_list(sql)
+        lecture_info.extend(lecture_info_)
 
     return lecture_info
