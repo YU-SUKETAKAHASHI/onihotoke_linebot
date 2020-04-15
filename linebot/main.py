@@ -126,7 +126,7 @@ def on_postback(event):
                                         label="使い方"),
                             MessageAction(text="送信フォーム",
                                         label="送信フォーム"),
-                            ])))])                       
+                            ]))])                       
 
     # 絞り込み検索
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="C":
