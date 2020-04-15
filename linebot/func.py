@@ -209,6 +209,8 @@ def gen_card_onihotoke(dic):
     teacher = dic["teacher"]
     difficulty = dic["difficulty"]
     worth = dic["worth"]
+    if not worth:
+      worth = " "
     test = dic["test"]
     report = dic["report"]
     attendance = dic["attendance"]
