@@ -14,7 +14,7 @@ from time import sleep
 
 
 url_1= "https://www.kibutu.com/search2.php?number="
-url_2 = "&amp;university=tohoku"
+url_2 = "&university=tohoku"
 
 print(len(ids))
 
@@ -24,10 +24,11 @@ for id_num in ids:
     html_file = urlopen(full_url)
     soup = bs(html_file, "html.parser")
     tables = soup.find_all("table")
+    # print(tables[len(tables)-1])
     #print(tables)
     describes.append(tables[len(tables)-1] if tables else "")#後ろから２番目のtableがお目当て
     print(id_num," done~")
-    sleep(0.5)
+    sleep(0.1)
 
 #print("1==================================================")
 
@@ -84,8 +85,8 @@ df_completed = pd.DataFrame(completed, columns=columns)
 
 #heroku postgresにテーブルを作成
 print("now inserting")
-DATABASE_URL = os.environ["DATABASE_URL"]
-engine = create_engine(DATABASE_URL)
+# DATABASE_URL = os.environ["DATABASE_URL"]
+engine = create_engine("postgres://iyclxsbznyhojl:1f5ec245d0bbf4bf5e58204da1ef0b172f971c102efe38fad8a1e36699a19974@ec2-18-210-51-239.compute-1.amazonaws.com:5432/de9fvgtnehbuju")
 df_completed.to_sql("lecture_assessments", engine, if_exists="append", index=False)
 
 print("completed")

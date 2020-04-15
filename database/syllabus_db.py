@@ -18,21 +18,20 @@ def get_lecture_list(sql):
     return results
 
 
-def search_lecture_info(group, classes):
+def search_lecture_info(group, class_):
     """
     ==Parameta==
         group(str)   : 取得した講義の群（人間論とか）
-        classes(str) : ユーザの所属（工とか文とか）
+        class_(str) : ユーザの所属（情物とか文とか）
     ==Return==
         辞書型の講義データのリスト
     """
-
-    sql = f"select * from lecture_info where group_='{group}' and classes like '%{classes}%' "
+    sql = f"select * from lecture_info where group_='{group}' and classes like '%{class_}%' "
     lecture_info = get_lecture_list(sql)
 
-    if group in "文教法経":
-        sql = f"select * from lecture_info where group_='{group}' and classes like '文系%' "
-        bunkei_lecture_info = get_lecture_list(sql)
+    if class_=="機知" or class_=="情物" or class_=="化バイ" or class_=="材料" or class_=="建築":
+        sql = f"select * from lecture_info where group_='{group}' and classes like '%工%' "
+        get_lecture_list(sql)
         lecture_info.extend(bunkei_lecture_info)
 
     return lecture_info
