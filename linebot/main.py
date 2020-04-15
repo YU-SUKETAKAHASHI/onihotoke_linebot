@@ -90,7 +90,7 @@ def on_postback(event):
          line_bot_api.reply_message(
             event.reply_token,
             [TextSendMessage(
-            text="下のボタンから学科を選択してください。"
+            text="下のボタンから学科を選択してください。",
             quick_reply=QuickReply(
                 items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list["工学部"]]
             ))])
