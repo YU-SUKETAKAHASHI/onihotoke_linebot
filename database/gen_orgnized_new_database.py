@@ -8,7 +8,7 @@ import pandas as pd
 import re
 
 #DBからDFを作成
-dsn = "postgres://fphbhkqbtrhhih:02d007904f1669ddcea59b5132c7f1c95a0981a3bf3bd0ca2d390584daf05f79@ec2-75-101-133-29.compute-1.amazonaws.com:5432/d7viglmaohhb63"
+dsn = TONPE
 connection = psycopg2.connect(dsn)
 df_ass = pd.read_sql(sql='select * from assessments;', con=connection)
 df_lec = pd.read_sql(sql='select * from lectures;', con=connection)
@@ -44,6 +44,6 @@ print(df_new["worth"])
 #df_new.to_sql("lecture_assessments", con=engine, if_exists="append", index=False)
 
 #heroku postgresにテーブルを作成
-# DATABASE_URL = os.environ["DATABASE_URL"]
-engine = create_engine("postgres://iyclxsbznyhojl:1f5ec245d0bbf4bf5e58204da1ef0b172f971c102efe38fad8a1e36699a19974@ec2-18-210-51-239.compute-1.amazonaws.com:5432/de9fvgtnehbuju")
+DATABASE_URL = os.environ["DATABASE_URL"]
+engine = create_engine(DATABASE_URL)
 df_new.to_sql("lecture_assessments", con=engine, if_exists="append", index=False)
