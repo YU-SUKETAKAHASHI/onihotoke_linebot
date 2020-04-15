@@ -28,13 +28,13 @@ def gen_card_syllabus(dic):
 
 
 
-    subject = dic[1]
+    subject = dic[1].split("(")[0]
     title = dic[2]
     teacher = dic[3].replace('\u3000', ' ')
     code = dic[4]
     semester = dic[5]
     day_time = dic[6]
-    classes = dic[7]
+    classes = dic[7]#.replace("組","").replace("１～５","機知").replace("６～１０","情物").replace("１１～１２","化バイ").replace("１３～１４","材料").replace("１５～１６","建築").replace("６～１４","情報，化バイ，材料").replace("全","文教法経")
 
     dcit_card = {
   "type": "bubble",

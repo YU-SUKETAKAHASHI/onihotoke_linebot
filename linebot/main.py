@@ -272,7 +272,7 @@ rich_menu_to_create = RichMenu(
         ),
         RichMenuArea(
             bounds=RichMenuBounds(x=1825, y=93, width=675, height=750),
-            action=PostbackAction(data="英語")
+            action=PostbackAction(data="英語C")
         ),
         RichMenuArea(
             bounds=RichMenuBounds(x=1825, y=843, width=675, height=750),
