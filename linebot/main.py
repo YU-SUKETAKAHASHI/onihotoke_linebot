@@ -132,6 +132,16 @@ def handle_message(event):
                     items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
                 ))])
 
+    if text == "使い方":
+        line_bot_api.reply_message(
+            event.reply_token,
+            [TextSendMessage(text=""),
+            TextSendMessage(text="")
+            ])
+
+
+
+
 
     #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
     elif "_" not in text or "でもう一度探す" in text:
