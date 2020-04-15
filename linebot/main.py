@@ -88,10 +88,10 @@ def on_postback(event):
                 event.reply_token,
                 [FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]]),
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
                 FlexSendMessage(
                     alt_text='hello',
-                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]])]))
+                    contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
 
 
     else: # ユーザ情報をDBに格納
