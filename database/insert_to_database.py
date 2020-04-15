@@ -11,6 +11,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 import neologdn
 from time import sleep
+import os
 
 
 url_1= "https://www.kibutu.com/search2.php?number="
@@ -28,7 +29,7 @@ for id_num in ids:
     #print(tables)
     describes.append(tables[len(tables)-1] if tables else "")#後ろから２番目のtableがお目当て
     print(id_num," done~")
-    sleep(0.1)
+    # sleep(0.1)
 
 #print("1==================================================")
 
@@ -87,6 +88,6 @@ df_completed = pd.DataFrame(completed, columns=columns)
 print("now inserting")
 # DATABASE_URL = os.environ["DATABASE_URL"]
 engine = create_engine("postgres://iyclxsbznyhojl:1f5ec245d0bbf4bf5e58204da1ef0b172f971c102efe38fad8a1e36699a19974@ec2-18-210-51-239.compute-1.amazonaws.com:5432/de9fvgtnehbuju")
-df_completed.to_sql("lecture_assessments", engine, if_exists="append", index=False)
+df_completed.to_sql("lecture_assessments", engine, if_exists="replace", index=False)
 
 print("completed")

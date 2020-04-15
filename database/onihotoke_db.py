@@ -26,6 +26,7 @@ def get_connection():
 #講義名を受け取り,その講義を担当している教授名を返す.
 def searchTeacher(text, bool):
     text = neologdn.normalize(text)#正規化
+    text = text.replace(" ", "")
     sql_lecture = f"select * from lecture_assessments where subject LIKE '%{text}%'"
     lecture_info = get_dict_resultset(sql_lecture)#検索結果が入っている.
 
@@ -48,6 +49,7 @@ def searchTeacher(text, bool):
 #教官名を受け取り,担当している講義名を返す
 def searchLecture(text, bool):
     text = neologdn.normalize(text)
+    text = text.replace(" ", "")
     sql_lecture = f"select * from lecture_assessments where teacher LIKE '%{text}%'"
     lecture_info = get_dict_resultset(sql_lecture)#検索結果が入っている
 

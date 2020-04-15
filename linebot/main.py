@@ -252,7 +252,7 @@ def handle_message(event):
     #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
     elif "_" in text:
         texts = text.split("_")#『教官名_講義名』　という入力を期待している
-        kibutsuList = searchAll(texts[0], texts[1])#講義情報の辞書のリスト
+        kibutsuList = searchAll(texts[0], texts[1].split("，")[0])#講義情報の辞書のリスト
         print(kibutsuList)
         if kibutsuList :
             try:
