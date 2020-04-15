@@ -268,7 +268,7 @@ def handle_message(event):
         kibutsuList = searchAll(texts[0], texts[1].split("，")[0])#講義情報の辞書のリスト
         print(kibutsuList)
         if kibutsuList :
-            if len(kibutuList)>10:
+            if len(kibutsuList)>10:
                 kibutsuList = kibutsuList[:10]
             try:
                 line_bot_api.reply_message(
