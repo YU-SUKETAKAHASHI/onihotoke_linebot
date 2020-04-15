@@ -137,7 +137,7 @@ def on_postback(event):
         lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
         print(lecture_info)
         print(user_major=="工" and post_data=="自然科学")
-        if (user_major=="機知" or user_major=="情物"or user_major=="化バイ" or user_major=="材料" or user_major=="建築"　or user_major=="理") and post_data=="自然科学":
+        if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
              line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text="件数が多いため表示できません"))
