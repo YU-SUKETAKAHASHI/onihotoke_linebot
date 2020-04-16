@@ -153,30 +153,30 @@ def on_postback(event):
             line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
 
         elif 10<len(lecture_info) and len(lecture_info)<=20:
             line_bot_api.reply_message(
                     event.reply_token,
                     [FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
                     FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]]))])
 
         elif 20<len(lecture_info) and len(lecture_info)<=30:
             line_bot_api.reply_message(
                     event.reply_token,
                     [FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
                     FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
                     FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]]))])
 
 
@@ -209,7 +209,7 @@ def handle_message(event):
                 ))])
 
 
-    if text == "送信フォーム":
+    elif text == "送信フォーム":
         line_bot_api.reply_message(
             event.reply_token,
             TemplateSendMessage(
