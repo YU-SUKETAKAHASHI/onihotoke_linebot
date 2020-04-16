@@ -303,7 +303,7 @@ def handle_message(event):
         print(kibutsuList)
         if kibutsuList :
             if len(kibutsuList)>10:
-                kibutsuList = ramdom.sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+                kibutsuList = random.sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
 
             try:
                 line_bot_api.reply_message(
