@@ -27,6 +27,8 @@ def get_connection():
 def searchTeacher(text, bool):
     text = neologdn.normalize(text)#正規化
     text = text.replace(" ", "")
+    text = text.replace("C1", "")
+
     sql_lecture = f"select * from lecture_assessments where subject LIKE '%{text}%'"
     lecture_info = get_dict_resultset(sql_lecture)#検索結果が入っている.
 
@@ -50,6 +52,8 @@ def searchTeacher(text, bool):
 def searchLecture(text, bool):
     text = neologdn.normalize(text)
     text = text.replace(" ", "")
+    text = text.replace("C1", "")
+    
     sql_lecture = f"select * from lecture_assessments where teacher LIKE '%{text}%'"
     lecture_info = get_dict_resultset(sql_lecture)#検索結果が入っている
 
