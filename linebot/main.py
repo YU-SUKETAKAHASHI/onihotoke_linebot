@@ -166,7 +166,7 @@ def on_postback(event):
                         FlexSendMessage(
                             alt_text='シラバス情報',
                             contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
-                        TextSendMessage(text=f"{len(lecture_info)}件の講義があります"))])
+                        TextSendMessage(text=f"{len(lecture_info)}件の講義があります")])
 
             elif 20<len(lecture_info) and len(lecture_info)<=30:
                 line_bot_api.reply_message(
@@ -180,7 +180,7 @@ def on_postback(event):
                         FlexSendMessage(
                             alt_text='シラバス情報',
                             contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]])),
-                            TextSendMessage(text=f"{len(lecture_info)}件の講義があります"))])
+                            TextSendMessage(text=f"{len(lecture_info)}件の講義があります")])
         # 所属登録が済んでいない場合
         else:
             line_bot_api.reply_message(
