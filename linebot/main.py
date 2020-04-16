@@ -117,7 +117,9 @@ def on_postback(event):
 ご感想、ご要望・・・
 「送信フォーム」のボタンを押してください。Googleフォームが現れ、匿名で送信できます。\n
 鬼仏情報の投稿・・・
-「トンペー鬼仏表」のボタンを押してください。サイトに移動します。"""),
+「トンペー鬼仏表」のボタンを押してください。サイトに移動します。\n
+経済学部の方・・・
+「ゼミ教」とテキストを送信してください。ゼミ教(東北大学経済学部)が運営するLINEbotの紹介リンクを送信します"""),
                 TemplateSendMessage(
                     alt_text = "選択ボタン",
                     template = ButtonsTemplate(
@@ -222,6 +224,10 @@ def handle_message(event):
                             uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
                             label="ご感想、ご要望はこちら"
                         )])))
+    elif text == "ゼミ教":
+         line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="https://lin.ee/bOegrZ3\n上記のリンクより友だち追加できます！"))
 
     #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
     elif "_" not in text or "でもう一度探す" in text:
