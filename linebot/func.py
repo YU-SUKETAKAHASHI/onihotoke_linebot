@@ -27,8 +27,7 @@ def gen_card_syllabus(dic,major):
     """
 
 
-
-    subject = dic[1].split("(")[0]
+    subject = dic[1].split("(")[0] if "(" in dic[1] else dic[1]
     title = dic[2]
     teacher = dic[3].replace('\u3000', ' ')
     code = dic[4]
