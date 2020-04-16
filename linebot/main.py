@@ -304,20 +304,29 @@ def handle_message(event):
         if kibutsuList :
             # if len(kibutsuList)>10:
             #     kibutsuList = kibutsuList[:10]
-            try:
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    FlexSendMessage(
-                        alt_text='鬼仏情報',
-                        contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList[:10]])))
-                # slackに報告
-                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
-                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
-            except:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
-                # slackに報告
-                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
-                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text='鬼仏情報',
+                    contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList[:10]])))
+            # slackに報告
+            SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
+            requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
+            
+            # try:
+            #     line_bot_api.reply_message(
+            #         event.reply_token,
+            #         FlexSendMessage(
+            #             alt_text='鬼仏情報',
+            #             contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList[:10]])))
+            #     # slackに報告
+            #     SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
+            #     requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
+            # except:
+            #     line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
+            #     # slackに報告
+            #     SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
+            #     requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
 
         # 該当する講義がなかったとき
         else:
