@@ -1,5 +1,5 @@
 #シラバスからの検索
-def gen_card_syllabus(dic):
+def gen_card_syllabus(dic,major):
 
     """
     dic = {"subject":"思想と...",
@@ -35,6 +35,12 @@ def gen_card_syllabus(dic):
     semester = dic[5]
     day_time = dic[6]
     classes = dic[7]#.replace("組","").replace("１～５","機知").replace("６～１０","情物").replace("１１～１２","化バイ").replace("１３～１４","材料").replace("１５～１６","建築").replace("６～１４","情報，化バイ，材料").replace("全","文教法経")
+
+    # colors = ["#bce2e8","#89c3eb","#82ae46","#164a84","#f39800","#ffd900","#e95464"]
+    # post_data = ["人間論","人文科学","自然論","自然科学","社会論","社会科学","英語C"]
+
+    colors = {"人間論":"#bce2e8","人文科学":"#89c3eb","自然論":"#82ae46","自然科学":"#164a84","社会論":"#f39800","社会科学":"#ffd900","英語C":"#e95464"}
+    color = colors[major]
 
     dcit_card = {
   "type": "bubble",
@@ -162,7 +168,8 @@ def gen_card_syllabus(dic):
           "type": "uri",
           "label": "シラバス",
           "uri": "https://craft.cite.tohoku.ac.jp/qsl/syllabus/display/" + code
-        }
+        },
+        "color": color
       },
       {
         "type": "button",
@@ -205,15 +212,15 @@ def gen_card_onihotoke(dic):
 
     """
 
-    subject = dic["subject"]
-    teacher = dic["teacher"]
-    difficulty = dic["difficulty"]
-    worth = dic["worth"]
-    test = dic["test"]
-    report = dic["report"]
-    attendance = dic["attendance"]
-    postdate = dic["post date"]
-    comment = dic["comment"]
+    subject = dic["subject"] if dic["subject"] else " "
+    teacher = dic["teacher"] if dic["teacher"] else " "
+    difficulty = dic["difficulty"] if dic["difficulty"] else " "
+    worth = dic["worth"] if dic["suworthbject"] else " "
+    test = dic["test"] if dic["test"] else " "
+    report = dic["report"] if dic["report"] else " "
+    attendance = dic["attendance"] if dic["attendance"] else " "
+    postdate = dic["post date"] if dic["post date"] else " "
+    comment = dic["comment"] if dic["comment"] else " "
 
     dict_card = {
   "type": "bubble",
