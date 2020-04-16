@@ -257,7 +257,7 @@ def handle_message(event):
         if kibutsuList:
             #kibutsuListの要素数が20を超えないようにする.
             if len(kibutsuList)>19:
-                kibutsuList = sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+                kibutsuList = random.sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
             kibutsuList.extend(["でもう一度探す"])#20個目
             buttons_templates = []
             roop = (len(kibutsuList)+3)//4    #最大4つまで表示できるテンプレートを何回表示すればいいか.
@@ -303,7 +303,7 @@ def handle_message(event):
         print(kibutsuList)
         if kibutsuList :
             if len(kibutsuList)>10:
-                kibutsuList = sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+                kibutsuList = ramdom.sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
 
             try:
                 line_bot_api.reply_message(
