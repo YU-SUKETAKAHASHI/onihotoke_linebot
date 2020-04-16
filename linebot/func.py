@@ -12,7 +12,6 @@ def gen_card_syllabus(dic,major):
 
     ==Return==
         origin_json :取得したdicのデータでテンプレから変更したjsonデータ
-
     """
     """
     ['人間論',

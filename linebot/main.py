@@ -174,7 +174,7 @@ def on_postback(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-    
+
     if text == "学部再登録":
         userid = event.source.user_id
         del_userinfo(userid) # user情報を削除
@@ -223,7 +223,7 @@ def handle_message(event):
         if kibutsuList:
             #kibutsuListの要素数が20を超えないようにする.
             if len(kibutsuList)>19:
-                kibutsuList = randam.sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+                kibutsuList = random.sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
             kibutsuList.extend(["でもう一度探す"])#20個目
             buttons_templates = []
             roop = (len(kibutsuList)+3)//4    #最大4つまで表示できるテンプレートを何回表示すればいいか.
@@ -269,12 +269,13 @@ def handle_message(event):
         print(kibutsuList)
         if kibutsuList :
             if len(kibutsuList)>10:
-                kibutsuList = randam.sample(kibutsuList, 10)
+                kibutsuList = random.sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+
             try:
                 line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='鬼仏情報',
                         contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
