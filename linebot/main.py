@@ -129,7 +129,7 @@ def on_postback(event):
                             MessageAction(text="学部再登録",
                                         label="学部再登録"),
                             URIAction(
-                                uri="https://forms.gle/nUUhmfZaNG5pSmVa7",
+                                uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
                                 label="送信フォーム"),
                             URIAction(
                                 uri="https://www.tonpe.site/toppages/index",
@@ -368,7 +368,7 @@ richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
 # upload an image for rich menu
 # path_default = "job_hisyo_woman_kochira__.png"
 # path = "rich_menu.jpg"
-with open("static/rich_menu.jpg", 'rb') as f:
+with open("static/rich_menu.png", 'rb') as f:
     line_bot_api.set_rich_menu_image(richMenuId, "image/jpeg", f)
 
 #########################################################################################
