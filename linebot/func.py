@@ -205,33 +205,15 @@ def gen_card_onihotoke(dic):
 
     """
 
-    subject = dic["subject"]
-    if not subject:
-      subject = " "
-    teacher = dic["teacher"]
-    if not teacher:
-      teacher = " "
-    difficulty = dic["difficulty"]
-    if not difficulty:
-      difficulty = " "
-    worth = dic["worth"]
-    if not worth:
-      worth = " "
-    test = dic["test"]
-    if not test:
-      test = " "
-    report = dic["report"]
-    if not report:
-      report = " "
-    attendance = dic["attendance"]
-    if not attendance:
-      attendance = " "
-    postdate = dic["post date"]
-    if not postdate:
-      postdate = " "
-    comment = dic["comment"]
-    if not comment:
-      comment = " "
+    subject = dic["subject"] if dic["subject"] else " "
+    teacher = dic["teacher"] if dic["teacher"] else " "
+    difficulty = dic["difficulty"] if dic["difficulty"] else " "
+    worth = dic["worth"] if dic["suworthbject"] else " "
+    test = dic["test"] if dic["test"] else " "
+    report = dic["report"] if dic["report"] else " "
+    attendance = dic["attendance"] if dic["attendance"] else " "
+    postdate = dic["post date"] if dic["post date"] else " "
+    comment = dic["comment"] if dic["comment"] else " "
 
     dict_card = {
   "type": "bubble",
