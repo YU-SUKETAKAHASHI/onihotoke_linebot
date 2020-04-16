@@ -139,42 +139,47 @@ def on_postback(event):
         lecture_group = post_data
         user_major = get_usermajor(user_id)
         print("user_major",user_major)
-        lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
+        if user_major:
+            lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
+            if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text="工,理は件数が多いため表示できません"))
 
-        if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
-             line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text="工,理は件数が多いため表示できません"))
+            if len(lecture_info)<10:
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
 
-        if len(lecture_info)<10:
+            elif 10<len(lecture_info) and len(lecture_info)<=20:
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        [FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]]))])
+
+            elif 20<len(lecture_info) and len(lecture_info)<=30:
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        [FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]]))])
+        # 所属登録が済んでいない場合
+        else:
             line_bot_api.reply_message(
-                    event.reply_token,
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
-
-        elif 10<len(lecture_info) and len(lecture_info)<=20:
-            line_bot_api.reply_message(
-                    event.reply_token,
-                    [FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]]))])
-
-        elif 20<len(lecture_info) and len(lecture_info)<=30:
-            line_bot_api.reply_message(
-                    event.reply_token,
-                    [FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]]))])
+                event.reply_token,
+                TextSendMessage(text="所属を登録してください"))
 
     else: # ユーザ情報をDBに格納
         if post_data[-1] == "部":
