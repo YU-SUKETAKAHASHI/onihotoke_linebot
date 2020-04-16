@@ -26,6 +26,7 @@ def get_connection():
 #講義名を受け取り,その講義を担当している教授名を返す.
 def searchTeacher(text, bool):
     text = neologdn.normalize(text)#正規化
+    text = text.split("，")[0] if "，" in text else text
     text = text.replace(" ", "")
     text = text.replace("C1", "")
 
