@@ -59,8 +59,8 @@ def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
             [TextSendMessage(text="""友だち追加ありがとうございます。\n
-東北大学鬼仏LINEbotです。\n
-～使い方～
+東北大学鬼仏LINEbotです。"""),
+TextSendMessage(text="""～使い方～
 ①下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。
 もう一度ボタンが出現します。\n
 ②下のメニューバー「基幹科目等の検索はこちら」より、
