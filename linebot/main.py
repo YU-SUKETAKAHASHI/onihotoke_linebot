@@ -68,12 +68,12 @@ TextSendMessage(text="""～使い方～
 投稿されている鬼仏情報を見ることができます。\n
 さらに下のメニューバー「基幹科目等の検索はこちら」から、登録した所属学部で履修できる基幹科目の講義を検索できます。\n
 その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
-TextSendMessage(text="""下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。"""),
-            TextSendMessage(
-            text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
+TextSendMessage(text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
 https://www.tonpe.site/toppages/index\n
 当アカウントのTwitterの運営アカウントはこちらです。
-https://twitter.com/reiwachan_""",
+https://twitter.com/reiwachan_"""),
+            TextSendMessage(
+            text="""下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。""",
             quick_reply=QuickReply(
                 items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list.keys()]
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
