@@ -26,15 +26,22 @@ def search_lecture_info(group, class_):
     ==Return==
         辞書型の講義データのリスト
     """
-    if group == "英語":
-        sql = f"select * from lecture_info where group_='{group}' and classes like '%{class_}%' and semester like '%1Q%'"
+    if group == "外国語":
+        sql = f"select * from lecture_info where group_='外国語' and classes like '%{class_}%' and semester like '%1Q%'"
+        lecture_info = get_lecture_list(sql)
+
+        if class_=="機知" or class_=="情物" or class_=="化バイ" or class_=="材料" or class_=="建築":
+            sql = f"select * from lecture_info where group_='外国語' and classes like '%工%' and semester like '%1Q%'"
+            lecture_info_ = get_lecture_list(sql)
+            lecture_info.extend(lecture_info_)
+
     else:    
         sql = f"select * from lecture_info where group_='{group}' and classes like '%{class_}%' "
-    lecture_info = get_lecture_list(sql)
+        lecture_info = get_lecture_list(sql)
 
-    if class_=="機知" or class_=="情物" or class_=="化バイ" or class_=="材料" or class_=="建築":
-        sql = f"select * from lecture_info where group_='{group}' and classes like '%工%' "
-        lecture_info_ = get_lecture_list(sql)
-        lecture_info.extend(lecture_info_)
+        if class_=="機知" or class_=="情物" or class_=="化バイ" or class_=="材料" or class_=="建築":
+            sql = f"select * from lecture_info where group_='{group}' and classes like '%工%' "
+            lecture_info_ = get_lecture_list(sql)
+            lecture_info.extend(lecture_info_)
 
     return lecture_info
