@@ -85,7 +85,6 @@ https://twitter.com/reiwachan_""",
     requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':text}))
 
 ################################################################################################
-
 # ブロックされたときにDBからユーザー情報を削除
 @handler.add(UnfollowEvent)
 def handle_unfollow(event):
