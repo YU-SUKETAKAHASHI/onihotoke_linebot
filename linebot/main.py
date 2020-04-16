@@ -141,7 +141,6 @@ def on_postback(event):
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
         user_major = get_usermajor(user_id)
-        print("user_major",user_major)
         if user_major:
             lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
             if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
