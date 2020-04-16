@@ -58,15 +58,15 @@ def callback():
 def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="""友だち追加ありがとうございます。\n
+            [TextSendMessage(text="""友だち追加ありがとうございます。
 東北大学鬼仏LINEbotです。"""),
 TextSendMessage(text="""～使い方～
 ①下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。
 もう一度ボタンが出現します。\n
 ②下のメニューバー「基幹科目等の検索はこちら」より、
 登録した所属学部で履修できる基幹科目の講義を検索できます。
-表示された『シラバス』，『鬼仏検索』ボタンより講義の情報を閲覧できます。\n
-③他に，「講義名」、または「教官の名前」を送信すると
+表示された『シラバス』、『鬼仏検索』ボタンより講義の情報を閲覧できます。\n
+③他に、「講義名」、または「教官の名前」を送信すると
 投稿されている鬼仏情報を閲覧することができます。\n
 その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
             TextSendMessage(
@@ -85,6 +85,7 @@ https://twitter.com/reiwachan_""",
     requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':text}))
 
 ################################################################################################
+
 # ブロックされたときにDBからユーザー情報を削除
 @handler.add(UnfollowEvent)
 def handle_unfollow(event):
@@ -136,17 +137,14 @@ def on_postback(event):
     # 絞り込み検索
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
-        # print(lecture_group)
         user_major = get_usermajor(user_id)
-        # print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
+        print("user_major",user_major)
         lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
-        # print(lecture_info)
-        # print(user_major=="工" and post_data=="自然科学")
+
         if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
              line_bot_api.reply_message(
                     event.reply_token,
-                    TextSendMessage(text="(工,理)件数が多いため表示できません"))
-
+                    TextSendMessage(text="工,理は件数が多いため表示できません"))
 
         if len(lecture_info)<10:
             line_bot_api.reply_message(
@@ -178,7 +176,6 @@ def on_postback(event):
                         alt_text='シラバス情報',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]]))])
 
-
     else: # ユーザ情報をDBに格納
         if post_data[-1] == "部":
             user_major = post_data[0]
@@ -206,7 +203,6 @@ def handle_message(event):
                 quick_reply=QuickReply(
                     items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
                 ))])
-
 
     elif text == "送信フォーム":
         line_bot_api.reply_message(
@@ -273,7 +269,6 @@ def handle_message(event):
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
 
-
     #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
     elif "_" in text:
         texts = text.split("_")#『教官名_講義名』　という入力を期待している
@@ -306,7 +301,6 @@ def handle_message(event):
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
-
 
     #検索結果が空だったとき、その旨をユーザーに送信
     else :
