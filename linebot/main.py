@@ -114,13 +114,10 @@ def on_postback(event):
                 event.reply_token,
                 [TextSendMessage(text="""再登録をしたいとき・・・
 下の「学部再登録」のボタンを押してください。もう一度下にボタンが出現します。\n
-さらに詳しい使い方が知りたいとき・・・
-「使い方」のボタンを押してください。詳しい使い方を説明します。\n
 ご感想、ご要望・・・
 「送信フォーム」のボタンを押してください。Googleフォームが現れ、匿名で送信できます。\n
 鬼仏情報の投稿・・・
-「投稿」のボタンを押してください。サイトに移動します。
-さらに経済学部に特化した情報発信LINEbotをゼミ協が運営しています。経済学部の方は「ゼミ協」と送信してみてください！"""),
+「投稿」のボタンを押してください。サイトに移動します。"""),
                 TemplateSendMessage(
                     alt_text = "選択ボタン",
                     template = ButtonsTemplate(
@@ -129,8 +126,6 @@ def on_postback(event):
                     actions=[
                             MessageAction(text="学部再登録",
                                         label="学部再登録"),
-                            MessageAction(text="使い方",
-                                        label="使い方"),
                             URIAction(
                                 uri="https://forms.gle/nUUhmfZaNG5pSmVa7",
                                 label="送信フォーム"),
@@ -185,25 +180,6 @@ def on_postback(event):
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]]))])
 
 
-
-
-        # elif len(lecture_info) > 10:
-        #     line_bot_api.reply_message(
-        #             event.reply_token,
-        #             [FlexSendMessage(
-        #                 alt_text='hello',
-        #                 contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
-        #             FlexSendMessage(
-        #                 alt_text='hello',
-        #                 contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:]]))])
-        # else:
-        #     line_bot_api.reply_message(
-        #             event.reply_token,
-        #             FlexSendMessage(
-        #                 alt_text='hello',
-        #                 contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
-        #
-
     else: # ユーザ情報をDBに格納
         if post_data[-1] == "部":
             user_major = post_data[0]
@@ -232,12 +208,6 @@ def handle_message(event):
                     items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
                 ))])
 
-    if text == "使い方":
-        line_bot_api.reply_message(
-            event.reply_token,
-            [TextSendMessage(text="まんじい"),
-            TextSendMessage(text="まんじい")
-            ])
 
     if text == "送信フォーム":
         line_bot_api.reply_message(
