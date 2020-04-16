@@ -59,21 +59,23 @@ def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
             [TextSendMessage(text="""友だち追加ありがとうございます。\n
-東北大学鬼仏LINEbotです。
-公開から半年、さらにパワーアップしてリニューアルです！
+東北大学鬼仏LINEbotです。\n
 従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！
 所属学部を登録することで、自分が履修できる講義が一目瞭然！"""),
 TextSendMessage(text="""～使い方～
-「講義名」、または「教官の名前」を送信してください。
-投稿されている鬼仏情報を見ることができます。\n
-さらに下のメニューバー「基幹科目等の検索はこちら」から、登録した所属学部で履修できる基幹科目の講義を検索できます。\n
+①下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。
+もう一度ボタンが出現します。\n
+②下のメニューバー「基幹科目等の検索はこちら」より、
+登録した所属学部で履修できる基幹科目の講義を検索できます。
+表示された『シラバス』，『鬼仏検索』ボタンより講義の情報を閲覧できます。\n
+③他に，「講義名」、または「教官の名前」を送信すると
+投稿されている鬼仏情報を閲覧することができます。\n
 その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
-TextSendMessage(text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
+            TextSendMessage(
+            text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
 https://www.tonpe.site/toppages/index\n
 当アカウントのTwitterの運営アカウントはこちらです。
-https://twitter.com/reiwachan_"""),
-            TextSendMessage(
-            text="""下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。""",
+https://twitter.com/reiwachan_""",
             quick_reply=QuickReply(
                 items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list.keys()]
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
