@@ -141,23 +141,23 @@ def on_postback(event):
         if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
              line_bot_api.reply_message(
                     event.reply_token,
-                    TextSendMessage(text="件数が多いため表示できません"))
+                    TextSendMessage(text="(工,理)件数が多いため表示できません"))
 
         elif len(lecture_info) > 10:
             line_bot_api.reply_message(
                     event.reply_token,
                     [FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
+                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
                     FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:]]))])
         else:
             line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
+                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
 
 
     else: # ユーザ情報をDBに格納
