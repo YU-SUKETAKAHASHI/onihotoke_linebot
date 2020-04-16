@@ -58,19 +58,20 @@ def callback():
 def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="""追加ありがとうございます。
+            [TextSendMessage(text="""友だち追加ありがとうございます。\n
 東北大学鬼仏LINEbotです。
 公開から半年、さらにパワーアップしてリニューアルです！
 従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！
-所属学部を登録することで、自分が履修できる講義が一目瞭然！"""),
+所属学部を登録することで、自分が履修できる講義が一目瞭然！
+"""),
 TextSendMessage(text="""～使い方～
 「講義名」、または「教官の名前」を送信してください。
 投稿されている鬼仏情報を見ることができます。\n
-さらに下のメニューバー「基幹科目等の検索はこちら」から、自分の所属学部で履修できる基幹科目の講義を検索できます。\n
+さらに下のメニューバー「基幹科目等の検索はこちら」から、登録した所属学部で履修できる基幹科目の講義を検索できます。\n
 その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
-TextSendMessage(text="""なお、LINEbotは「トンペー鬼仏表」さんと協力しています。鬼仏情報の投稿は「トンペー鬼仏表」からお願いします。
+TextSendMessage(text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
 https://www.tonpe.site/toppages/index\n
-Twitterの運営アカウントはこちらです。
+当アカウントのTwitterの運営アカウントはこちらです。\n
 https://twitter.com/reiwachan_"""),
             TextSendMessage(
             text="下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。",
@@ -137,12 +138,12 @@ def on_postback(event):
     # 絞り込み検索
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
-        print(lecture_group)
+        # print(lecture_group)
         user_major = get_usermajor(user_id)
-        print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
+        # print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
         lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
-        print(lecture_info)
-        print(user_major=="工" and post_data=="自然科学")
+        # print(lecture_info)
+        # print(user_major=="工" and post_data=="自然科学")
         if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
              line_bot_api.reply_message(
                     event.reply_token,
@@ -279,7 +280,7 @@ def handle_message(event):
     elif "_" in text:
         texts = text.split("_")#『教官名_講義名』　という入力を期待している
         kibutsuList = searchAll(texts[0], texts[1].split("，")[0])#講義情報の辞書のリスト
-        print(kibutsuList)
+        # print(kibutsuList)
         if kibutsuList :
             if len(kibutsuList)>10:
                 kibutsuList = random.sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
