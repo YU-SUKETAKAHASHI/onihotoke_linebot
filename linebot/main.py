@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, abort
 import requests
 import json
+import random
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -208,8 +209,6 @@ def handle_message(event):
                             label="ご感想、ご要望はこちら"
                         )])))
 
-
-
     #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
     elif "_" not in text or "でもう一度探す" in text:
         if "でもう一度探す" in text:
@@ -269,6 +268,8 @@ def handle_message(event):
         kibutsuList = searchAll(texts[0], texts[1].split("，")[0])#講義情報の辞書のリスト
         print(kibutsuList)
         if kibutsuList :
+            if len(kibutsuList)>10:
+                kibutsuList = kibutsuList[:10]
             try:
                 line_bot_api.reply_message(
                     event.reply_token,
