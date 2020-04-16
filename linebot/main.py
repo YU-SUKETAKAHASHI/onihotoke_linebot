@@ -302,14 +302,15 @@ def handle_message(event):
         kibutsuList = searchAll(texts[0], texts[1].split("，")[0])#講義情報の辞書のリスト
         print(kibutsuList)
         if kibutsuList :
-            # if len(kibutsuList)>10:
-            #     kibutsuList = kibutsuList[:10]
+            if len(kibutsuList)>10:
+                kibutsuList = sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+
             try:
                 line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
                         alt_text='鬼仏情報',
-                        contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList[:10]])))
+                        contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList)))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
