@@ -143,55 +143,21 @@ def on_postback(event):
                     event.reply_token,
                     TextSendMessage(text="件数が多いため表示できません"))
 
-        if len(lecture_info) <=10:
-            line_bot_api.reply_message(
-                    event.reply_token,
-                    FlexSendMessage(
-                        alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])))
-
-        elif 10<len(lecture_info) and len(lecture_info)<=20:
+        elif len(lecture_info) > 10:
             line_bot_api.reply_message(
                     event.reply_token,
                     [FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])),
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
                     FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[10:]]))])
-
-        elif 20<len(lecture_info) and len(lecture_info)<=30:
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+        else:
             line_bot_api.reply_message(
                     event.reply_token,
-                    [FlexSendMessage(
-                        alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])),
                     FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[10:20]])),
-                    FlexSendMessage(
-                        alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[20:30]]))])
-
-
-
-
-
-        # elif len(lecture_info) > 10:
-        #     line_bot_api.reply_message(
-        #             event.reply_token,
-        #             [FlexSendMessage(
-        #                 alt_text='hello',
-        #                 contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])),
-        #             FlexSendMessage(
-        #                 alt_text='hello',
-        #                 contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[10:]]))])
-        # else:
-        #     line_bot_api.reply_message(
-        #             event.reply_token,
-        #             FlexSendMessage(
-        #                 alt_text='hello',
-        #                 contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])))
+                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
 
 
     else: # ユーザ情報をDBに格納
@@ -257,7 +223,7 @@ def handle_message(event):
         if kibutsuList:
             #kibutsuListの要素数が20を超えないようにする.
             if len(kibutsuList)>19:
-                kibutsuList = sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
+                kibutsuList = randam.sample(kibutsuList, 19)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
             kibutsuList.extend(["でもう一度探す"])#20個目
             buttons_templates = []
             roop = (len(kibutsuList)+3)//4    #最大4つまで表示できるテンプレートを何回表示すればいいか.
@@ -303,14 +269,13 @@ def handle_message(event):
         print(kibutsuList)
         if kibutsuList :
             if len(kibutsuList)>10:
-                kibutsuList = sample(kibutsuList, 10)#一応シャッフルする.何回か表示すればすべての講義を見れるように.
-
+                kibutsuList = randam.sample(kibutsuList, 10)
             try:
                 line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
-                        alt_text='鬼仏情報',
-                        contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList)))
+                        alt_text='hello',
+                        contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
