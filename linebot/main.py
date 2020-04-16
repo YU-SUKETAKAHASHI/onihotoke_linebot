@@ -151,7 +151,7 @@ def on_postback(event):
                         alt_text='hello',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
 
-        elif 10<=len(lecture_info) and len(lecture_info)<=20:
+        elif 10<len(lecture_info) and len(lecture_info)<=20:
             line_bot_api.reply_message(
                     event.reply_token,
                     [FlexSendMessage(
@@ -161,7 +161,7 @@ def on_postback(event):
                         alt_text='hello',
                         contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]]))])
 
-        elif 20<=len(lecture_info) and len(lecture_info)<=30:
+        elif 20<len(lecture_info) and len(lecture_info)<=30:
             line_bot_api.reply_message(
                     event.reply_token,
                     [FlexSendMessage(
