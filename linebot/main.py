@@ -71,7 +71,7 @@ TextSendMessage(text="""～使い方～
 その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください。\n
 概要・免責事項等は当アカウントのタイムライン投稿をご覧ください。"""),
             TextSendMessage(
-            text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
+            text="""なお、鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
 https://www.tonpe.site/toppages/index\n
 当アカウントのTwitterの運営アカウントはこちらです。
 https://twitter.com/reiwachan_""",
