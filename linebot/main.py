@@ -68,9 +68,9 @@ TextSendMessage(text="""～使い方～
 投稿されている鬼仏情報を見ることができます。\n
 さらに下のメニューバー「基幹科目等の検索はこちら」から、自分の所属学部で履修できる基幹科目の講義を検索できます。\n
 その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
-TextSendMessage(text="""なお、LINEbotは「トンペー鬼仏表」さんと協力しています。鬼仏情報の投稿は「トンペー鬼仏表」からお願いします。\n
-https://www.tonpe.site/toppages/index
-Twitterの運営アカウントはこちらです。\n
+TextSendMessage(text="""なお、LINEbotは「トンペー鬼仏表」さんと協力しています。鬼仏情報の投稿は「トンペー鬼仏表」からお願いします。
+https://www.tonpe.site/toppages/index\n
+Twitterの運営アカウントはこちらです。
 https://twitter.com/reiwachan_"""),
             TextSendMessage(
             text="下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。",
