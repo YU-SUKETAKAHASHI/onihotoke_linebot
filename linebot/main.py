@@ -366,7 +366,7 @@ richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
 # upload an image for rich menu
 # path_default = "job_hisyo_woman_kochira__.png"
 # path = "rich_menu.jpg"
-with open("static/rich_menu2.png", 'rb') as f:
+with open("static/rich_menu.png", 'rb') as f:
     line_bot_api.set_rich_menu_image(richMenuId, "image/jpeg", f)
 
 #########################################################################################
