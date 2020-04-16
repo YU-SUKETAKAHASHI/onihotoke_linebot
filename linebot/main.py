@@ -129,7 +129,7 @@ def on_postback(event):
                             ]))])
 
     # 絞り込み検索
-elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
+    elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
         print(lecture_group)
         user_major = get_usermajor(user_id)
@@ -147,16 +147,16 @@ elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
                     event.reply_token,
                     [FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])),
+                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])),
                     FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[10:]]))])
+                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[10:]]))])
         else:
             line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
                         alt_text='hello',
-                        contents=CarouselContainer([gen_card_syllabus(dic) for dic in lecture_info[:10]])))
+                        contents=CarouselContainer([gen_card_syllabus(dic,post_data) for dic in lecture_info[:10]])))
 
 
     else: # ユーザ情報をDBに格納
