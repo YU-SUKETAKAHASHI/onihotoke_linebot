@@ -62,14 +62,16 @@ def handle_follow(event):
 東北大学鬼仏LINEbotです。
 公開から半年、さらにパワーアップしてリニューアルです！
 従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！
-所属学部を登録することで、自分が履修できる講義が一目瞭然！\n
-～使い方～
+所属学部を登録することで、自分が履修できる講義が一目瞭然！"""),
+TextSendMessage(text="""～使い方～
 「講義名」、または「教官の名前」を送信してください。
 投稿されている鬼仏情報を見ることができます。\n
 さらに下のメニューバー「基幹科目等の検索はこちら」から、自分の所属学部で履修できる基幹科目の講義を検索できます。\n
-その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください。\n
-なお、LINEbotは「トンペー鬼仏表」さんと協力しています。鬼仏情報の投稿は「トンペー鬼仏表」からお願いします。\n
-https://www.tonpe.site/toppages/index"""),
+その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
+TextSendMessage(text="""なお、LINEbotは「トンペー鬼仏表」さんと協力しています。鬼仏情報の投稿は「トンペー鬼仏表」からお願いします。\n
+https://www.tonpe.site/toppages/index
+Twitterの運営アカウントはこちらです。\n
+https://twitter.com/reiwachan_"""),
             TextSendMessage(
             text="下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。",
             quick_reply=QuickReply(
@@ -288,7 +290,7 @@ def handle_message(event):
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
             except:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.""))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
@@ -297,8 +299,7 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
-                \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\nhttps://twitter.com/reiwachan_'))
+                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
@@ -323,7 +324,7 @@ def handle_message(event):
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
             except:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです.\nhttps://twitter.com/reiwachan_"))
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです."))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
@@ -332,8 +333,7 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.\
-                \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\nhttps://twitter.com/reiwachan_'))
+                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
@@ -343,8 +343,7 @@ def handle_message(event):
     else :
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text='教官名または講義名を入力してください.\
-            \n\nバグ,要望等がございましたら\nこちらまでご連絡ください.\nhttps://twitter.com/reiwachan_'))
+            TextSendMessage(text='教官名または講義名を入力してください.'))
         # slackに報告
         SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
         requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"たぶん適当な検索ワード : " + text}))
