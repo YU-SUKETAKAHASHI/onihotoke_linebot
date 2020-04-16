@@ -26,7 +26,10 @@ def search_lecture_info(group, class_):
     ==Return==
         辞書型の講義データのリスト
     """
-    sql = f"select * from lecture_info where group_='{group}' and classes like '%{class_}%' "
+    if group == "英語":
+        sql = = f"select * from lecture_info where group_='{group}' and classes like '%{class_}%' and semester like '%{1Q}%'"
+    else:    
+        sql = f"select * from lecture_info where group_='{group}' and classes like '%{class_}%' "
     lecture_info = get_lecture_list(sql)
 
     if class_=="機知" or class_=="情物" or class_=="化バイ" or class_=="材料" or class_=="建築":
