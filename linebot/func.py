@@ -221,6 +221,15 @@ def gen_card_onihotoke(dic):
     postdate = dic["post date"] if dic["post date"] else " "
     comment = dic["comment"] if dic["comment"] else " "
 
+    #difficultyに応じてヘッダーの色を変更
+    if "仏" in difficulty:
+        color_cord = "#fffacd"
+    elif "鬼" in difficulty:
+        color_cord = "#f08080"
+    else:
+        color_cord = "#b0c4de"
+
+
     dict_card = {
   "type": "bubble",
   "header": {
@@ -232,7 +241,7 @@ def gen_card_onihotoke(dic):
         "text": " "
       }
     ],
-    "backgroundColor": "#b0c4de"
+    "backgroundColor": color_cord
   },
   "body": {
     "type": "box",
@@ -452,12 +461,6 @@ def gen_card_onihotoke(dic):
 }
 
 
-    #difficultyに応じてヘッダーの色を変更
-    if "仏" in difficulty:
-        dict_card["header"]["backgroundColor"] = "#fffacd"
-    elif "鬼" in difficulty:
-        dict_card["header"]["backgroundColor"] = "#f08080"
-    else:
-        dict_card["header"]["backgroundColor"] = "#b0c4de"
+
 
     return dict_card

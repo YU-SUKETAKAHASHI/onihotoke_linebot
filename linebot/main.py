@@ -308,7 +308,7 @@ def handle_message(event):
                 line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
-                        alt_text='hello',
+                        alt_text='鬼仏情報',
                         contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
