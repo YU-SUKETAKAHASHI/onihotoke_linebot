@@ -174,7 +174,7 @@ def on_postback(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
-
+    
     if text == "学部再登録":
         userid = event.source.user_id
         del_userinfo(userid) # user情報を削除
