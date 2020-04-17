@@ -130,7 +130,7 @@ def on_postback(event):
                             MessageAction(text="学部再登録",
                                         label="学部再登録"),
                             URIAction(
-                                uri="https://forms.gle/nUUhmfZaNG5pSmVa7",
+                                uri="https://forms.gle/XmjrKMPacj9H7nDH9",
                                 label="送信フォーム"),
                             URIAction(
                                 uri="https://www.tonpe.site/toppages/index",
