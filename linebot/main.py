@@ -115,7 +115,7 @@ def on_postback(event):
                 event.reply_token,
                 [TextSendMessage(text="""再登録をしたいとき・・・
 下の「学部再登録」のボタンを押してください。もう一度下にボタンが出現します。\n
-ご感想、ご要望・・・
+ご感想、エラー報告・・・
 「送信フォーム」のボタンを押してください。Googleフォームが現れ、匿名で送信できます。\n
 鬼仏情報の投稿・・・
 「トンペー鬼仏表」のボタンを押してください。サイトに移動します。\n
@@ -311,7 +311,7 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='該当する講義情報が見つかりませんでした。'))
+                TextSendMessage(text='まだこの講義には鬼仏情報が投稿されていません。'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
