@@ -255,12 +255,12 @@ def handle_message(event):
                 if i==roop-1:#最後は4つ以下になるからスライス部分を変える必要あり.
                     buttons_templates.append(ButtonsTemplate(
                         title='講義名を選択してください', text='choose the lecture name', actions=[
-                            MessageAction(label= text + " " + name, text= text + "_" + name) for name in kibutsuList[4*i:]
+                            MessageAction(label= text + " " + name[:10], text= text + "_" + name) for name in kibutsuList[4*i:]
                             ]))
                     break
                 buttons_templates.append(ButtonsTemplate(
                     title='講義名を選択してください', text='choose the lecture name', actions=[
-                        MessageAction(label= text + " " + name, text= text + "_" + name) for name in kibutsuList[4*i:4*(i+1)]
+                        MessageAction(label= text + " " + name[:10], text= text + "_" + name) for name in kibutsuList[4*i:4*(i+1)]
                         ]))
             try:
                 line_bot_api.reply_message(event.reply_token,
@@ -311,7 +311,7 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='まだこの講義には鬼仏情報が投稿されていません。'))
+                TextSendMessage(text='該当する講義情報が見つかりませんでした。'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
