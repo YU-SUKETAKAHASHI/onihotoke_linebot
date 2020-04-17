@@ -2,7 +2,6 @@ import psycopg2
 import psycopg2.extras
 import os
 
-
 # DBと接続する
 def get_connection():
     DATABASE_URL = os.environ.get('DATABASE_URL')

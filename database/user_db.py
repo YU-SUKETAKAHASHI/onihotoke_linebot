@@ -40,6 +40,8 @@ def add_userinfo(major, userid):
 def get_usermajor(userid):
     sql_search = f"select major from user_info where userid='{userid}'"
     user_major = get_userinfo_list(sql_search)
+    if not user_major:
+        return False
     return user_major[0][0]
 
 
