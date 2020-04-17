@@ -227,7 +227,7 @@ def handle_message(event):
                             uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
                             label="ご感想、ご要望はこちら"
                         )])))
-    elif text == "ゼミ教":
+    elif text == "ゼミ協":
          line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text="https://lin.ee/bOegrZ3\n上記のリンクより友だち追加できます！"))
