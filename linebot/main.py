@@ -58,7 +58,7 @@ def callback():
 def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="""友だち追加ありがとうございます。
+            [TextSendMessage(text="""友だち追加ありがとうございます!
 東北大学鬼仏LINEbotです。"""),
 TextSendMessage(text="""～使い方～
 ①下のボタン（一番下までスクロールすると表示されます）から学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」とテキストを送信してください。
