@@ -58,19 +58,20 @@ def callback():
 def handle_follow(event):
     line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(text="""友だち追加ありがとうございます。\n
-東北大学鬼仏LINEbotです。
-公開から半年、さらにパワーアップしてリニューアルです！
-従来の機能に加えて基幹科目をシラバスから検索できる機能を追加しました！
-所属学部を登録することで、自分が履修できる講義が一目瞭然！"""),
+            [TextSendMessage(text="""友だち追加ありがとうございます。
+東北大学鬼仏LINEbotです。"""),
 TextSendMessage(text="""～使い方～
-「講義名」、または「教官の名前」を送信してください。
-投稿されている鬼仏情報を見ることができます。\n
-さらに下のメニューバー「基幹科目等の検索はこちら」から、登録した所属学部で履修できる基幹科目の講義を検索できます。\n
-その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください"""),
-TextSendMessage(text="""下のボタンから学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」と送信してください。もう一度ボタンが出現します。"""),
+①下のボタン（一番下までスクロールすると表示されます）から学部を選択してください。\n学部を間違えて登録した際は、「学部再登録」とテキストを送信してください。
+もう一度ボタンが出現します。\n
+②下のメニューバー「基幹科目等の検索はこちら」より、
+登録した所属学部で履修できる基幹科目の講義を検索できます。
+表示された『シラバス』・『鬼仏検索』ボタンより講義の情報を閲覧できます。\n
+③他に、「講義名」、または「教員の名前」を送信すると
+投稿されている鬼仏情報を閲覧することができます。\n
+その他わからないことがありましたら下のメニューバーの「ヘルプ」ボタンを押してください。\n
+概要・免責事項等は当アカウントのタイムライン投稿をご覧ください。"""),
             TextSendMessage(
-            text="""なお，鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
+            text="""なお、鬼仏情報の投稿は「トンペー鬼仏表」よりお願いします！
 https://www.tonpe.site/toppages/index\n
 当アカウントのTwitterの運営アカウントはこちらです。
 https://twitter.com/reiwachan_""",
@@ -117,7 +118,9 @@ def on_postback(event):
 ご感想、ご要望・・・
 「送信フォーム」のボタンを押してください。Googleフォームが現れ、匿名で送信できます。\n
 鬼仏情報の投稿・・・
-「トンペー鬼仏表」のボタンを押してください。サイトに移動します。"""),
+「トンペー鬼仏表」のボタンを押してください。サイトに移動します。\n
+経済学部の方・・・
+「ゼミ協」とテキストを送信してください。ゼミ協(東北大学経済学部)が運営するLINEbotの紹介リンクを送信します。"""),
                 TemplateSendMessage(
                     alt_text = "選択ボタン",
                     template = ButtonsTemplate(
@@ -137,48 +140,51 @@ def on_postback(event):
     # 絞り込み検索
     elif post_data[-1]=="論" or post_data[-1]=="学" or post_data[-1]=="語":
         lecture_group = post_data
-        # print(lecture_group)
         user_major = get_usermajor(user_id)
-        # print(user_major) #useridを受け取ってDBからそのユーザの所属を返す
-        lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
-        # print(lecture_info)
-        # print(user_major=="工" and post_data=="自然科学")
-        if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
-             line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text="(工,理)件数が多いため表示できません"))
+        if user_major:
+            lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
+            if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text="工,理は件数が多いため表示できません"))
 
+            if len(lecture_info)<10:
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        [FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
+                        TextSendMessage(text=f"上記{len(lecture_info)}件の講義が見つかりました")])
 
-        if len(lecture_info)<10:
+            elif 10<len(lecture_info) and len(lecture_info)<=20:
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        [FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
+                        TextSendMessage(text=f"上記{len(lecture_info)}件の講義が見つかりました")])
+
+            elif 20<len(lecture_info) and len(lecture_info)<=30:
+                line_bot_api.reply_message(
+                        event.reply_token,
+                        [FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
+                        FlexSendMessage(
+                            alt_text='シラバス情報',
+                            contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]])),
+                            TextSendMessage(text=f"上記{len(lecture_info)}件の講義が見つかりました")])
+        # 所属登録が済んでいない場合
+        else:
             line_bot_api.reply_message(
-                    event.reply_token,
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])))
-
-        elif 10<len(lecture_info) and len(lecture_info)<=20:
-            line_bot_api.reply_message(
-                    event.reply_token,
-                    [FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]]))])
-
-        elif 20<len(lecture_info) and len(lecture_info)<=30:
-            line_bot_api.reply_message(
-                    event.reply_token,
-                    [FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[:10]])),
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[10:20]])),
-                    FlexSendMessage(
-                        alt_text='シラバス情報',
-                        contents=CarouselContainer([gen_card_syllabus(dic, post_data) for dic in lecture_info[20:30]]))])
-
+                event.reply_token,
+                TextSendMessage(text="所属を登録してください"))
 
     else: # ユーザ情報をDBに格納
         if post_data[-1] == "部":
@@ -208,7 +214,6 @@ def handle_message(event):
                     items=[QuickReplyButton(action=PostbackAction(label=major, data=major)) for major in major_list]
                 ))])
 
-
     elif text == "送信フォーム":
         line_bot_api.reply_message(
             event.reply_token,
@@ -222,6 +227,10 @@ def handle_message(event):
                             uri="https://forms.gle/cAMusm8ZN8i4SmbL8",
                             label="ご感想、ご要望はこちら"
                         )])))
+    elif text == "ゼミ教":
+         line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="https://lin.ee/bOegrZ3\n上記のリンクより友だち追加できます！"))
 
     #教官または講義名いずれかが送信されたとき.もしくはもう一度探すとき
     elif "_" not in text or "でもう一度探す" in text:
@@ -260,7 +269,7 @@ def handle_message(event):
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
             except:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです."))
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません。エラーは報告済みです。"))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
@@ -269,11 +278,10 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.'))
+                TextSendMessage(text='該当する講義情報が見つかりませんでした。'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
-
 
     #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
     elif "_" in text:
@@ -294,7 +302,7 @@ def handle_message(event):
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
             except:
-                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません.エラーは報告済みです."))
+                line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません。エラーは報告済みです。"))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
                 requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
@@ -303,11 +311,10 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text='該当する講義情報が見つかりませんでした.\nもう一度検索名を見直してください.'))
+                TextSendMessage(text='該当する講義情報が見つかりませんでした。'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
             requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
-
 
     #検索結果が空だったとき、その旨をユーザーに送信
     else :
@@ -366,7 +373,7 @@ richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
 # upload an image for rich menu
 # path_default = "job_hisyo_woman_kochira__.png"
 # path = "rich_menu.jpg"
-with open("static/rich_menu.png", 'rb') as f:
+with open("static/rich_menu.jpg", 'rb') as f:
     line_bot_api.set_rich_menu_image(richMenuId, "image/jpeg", f)
 
 #########################################################################################
