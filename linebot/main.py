@@ -15,9 +15,9 @@ from linebot.models import (
     RichMenu,RichMenuSize,RichMenuArea,RichMenuBounds,CarouselTemplate,CarouselColumn,PostbackTemplateAction,BubbleContainer,BoxComponent,TextComponent,ImageComponent,
     FlexSendMessage,FlexSendMessage,CarouselContainer,QuickReply,QuickReplyButton,UnfollowEvent)
 
-from database.syllabus_db import search_lecture_info
-from database.user_db import del_userinfo, add_userinfo, get_usermajor
-from database.onihotoke_db import searchTeacher, searchLecture, searchAll
+# from database.syllabus_db import search_lecture_info
+# from database.user_db import del_userinfo, add_userinfo, get_usermajor
+# from database.onihotoke_db import searchTeacher, searchLecture, searchAll
 from func import gen_card_syllabus, gen_card_onihotoke
 from database import User_DB, Syllabus_DB, Onihotoke_DB
 
