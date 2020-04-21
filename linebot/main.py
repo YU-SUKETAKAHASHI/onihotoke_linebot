@@ -15,10 +15,12 @@ from linebot.models import (
     RichMenu,RichMenuSize,RichMenuArea,RichMenuBounds,CarouselTemplate,CarouselColumn,PostbackTemplateAction,BubbleContainer,BoxComponent,TextComponent,ImageComponent,
     FlexSendMessage,FlexSendMessage,CarouselContainer,QuickReply,QuickReplyButton,UnfollowEvent)
 
-from database.syllabus_db import search_lecture_info
-from database.user_db import get_userinfo_list, del_userinfo, add_userinfo,get_usermajor,del_userinfo
-from database.onihotoke_db import searchTeacher, searchLecture, searchAll
+# from database.syllabus_db import search_lecture_info
+# from database.user_db import del_userinfo, add_userinfo, get_usermajor
+# from database.onihotoke_db import searchTeacher, searchLecture, searchAll
 from func import gen_card_syllabus, gen_card_onihotoke
+from database import User_DB, Syllabus_DB, Onihotoke_DB
+
 
 app = Flask(__name__)
 
@@ -26,6 +28,15 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
+
+SLACKBOT_SEARCH_KEYWORD = os.environ["SLACKBOT_SEARCH_KEYWORD"]
+SLACKBOT_ERROR_KEYWORD = os.environ["SLACKBOT_ERROR_KEYWORD"]
+SLACKBOT_NEW_COMER = os.environ["SLACKBOT_NEW_COMER"]
+
+
+user_db = User_DB()
+syllabus_db = Syllabus_DB()
+onihotoke_db = Onihotoke_DB()
 
 major_list = {"文学部":None,
               "教育学部":None,
@@ -80,10 +91,9 @@ https://twitter.com/reiwachan_""",
             ))]) # QuickReplyというリッチメッセージが起動してPostbackEventを発生させる
 
     # slackに投稿
-    SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_NEW_COMER"]
     profile = line_bot_api.get_profile(event.source.user_id)
     text = "表示名:{}\nユーザID:{}\n画像のURL:{}\nステータスメッセージ:{}".format(profile.display_name, profile.user_id, profile.picture_url, profile.status_message)
-    requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':text}))
+    requests.post(SLACKBOT_NEW_COMER, data=json.dumps({'text':text}))
 
 ################################################################################################
 
@@ -91,7 +101,7 @@ https://twitter.com/reiwachan_""",
 @handler.add(UnfollowEvent)
 def handle_unfollow(event):
     userid = event.source.user_id
-    del_userinfo(userid)
+    user_db.del_userinfo(userid)
 
 ################################################################################################
 
@@ -142,7 +152,7 @@ def on_postback(event):
         lecture_group = post_data
         user_major = get_usermajor(user_id)
         if user_major:
-            lecture_info = search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
+            lecture_info = syllabus_db.search_lecture_info(lecture_group, user_major) # 講義情報の辞書のリストが返ってくる
             if (user_major=="機知" or user_major=="情物" or user_major=="化バイ" or user_major=="材料" or user_major=="建築" or user_major=="理") and post_data=="自然科学":
                 line_bot_api.reply_message(
                         event.reply_token,
@@ -191,7 +201,7 @@ def on_postback(event):
             user_major = post_data[0]
         else:
             user_major = post_data
-        add_userinfo(user_major, user_id)
+        user_db.add_userinfo(user_major, user_id)
         line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=post_data + "で登録しました！"))
@@ -203,7 +213,7 @@ def handle_message(event):
 
     if text == "学部再登録":
         userid = event.source.user_id
-        del_userinfo(userid) # user情報を削除
+        user_db.del_userinfo(userid) # user情報を削除
 
         line_bot_api.reply_message(
             event.reply_token,
@@ -236,8 +246,8 @@ def handle_message(event):
     elif "_" not in text or "でもう一度探す" in text:
         if "でもう一度探す" in text:
             text = text.split("_")[0]
-        teacherList = searchTeacher(text, False)#教員列からワードを検索
-        lectureList = searchLecture(text, False)#講義列からワードを検索
+        teacherList = onihotoke_db.searchTeacher(text, False)#教員列からワードを検索
+        lectureList = onihotoke_db.searchLecture(text, False)#講義列からワードを検索
         kibutsuList = []#2つのリストを結合　1つは空であるはず.
         kibutsuList.extend(teacherList)
         kibutsuList.extend(lectureList)
@@ -266,13 +276,11 @@ def handle_message(event):
                 line_bot_api.reply_message(event.reply_token,
                     [TemplateSendMessage(alt_text='講義を選択してください', template=buttons_template) for buttons_template in buttons_templates])
                 # slackに報告
-                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
-                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
+                requests.post(SLACKBOT_SEARCH_KEYWORD, data=json.dumps({'text':"検索ワード : " + text}))
             except:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません。エラーは報告済みです。"))
                 # slackに報告
-                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
-                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
+                requests.post(SLACKBOT_ERROR_KEYWORD, data=json.dumps({'text':"エラー検索ワード : " + text}))
 
         # 該当する講義がなかったとき
         else:
@@ -280,13 +288,12 @@ def handle_message(event):
                 event.reply_token,
                 TextSendMessage(text='該当する講義情報が見つかりませんでした。'))
             # slackに報告
-            SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
-            requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
+            requests.post(SLACKBOT_ERROR_KEYWORD, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
 
     #教官名と講義名のどちらも送信されたとき、その講義の鬼仏情報をユーザーに送信
     elif "_" in text:
         texts = text.split("_")#『教官名_講義名』　という入力を期待している
-        kibutsuList = searchAll(texts[0], texts[1].split("，")[0])
+        kibutsuList = onihotoke_db.searchAll(texts[0], texts[1].split("，")[0])
         print(texts[1].split("，")[0])#講義情報の辞書のリスト
         # print(kibutsuList)
         if kibutsuList :
@@ -300,13 +307,12 @@ def handle_message(event):
                         alt_text='鬼仏情報',
                         contents=CarouselContainer([gen_card_onihotoke(dic) for dic in kibutsuList])))
                 # slackに報告
-                SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_SEARCH_KEYWORD"]
-                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"検索ワード : " + text}))
+                requests.post(SLACKBOT_SEARCH_KEYWORD, data=json.dumps({'text':"検索ワード : " + text}))
             except:
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text="エラーのため講義情報を表示できません。エラーは報告済みです。"))
                 # slackに報告
                 SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
-                requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"エラー検索ワード : " + text}))
+                requests.post(SLACKBOT_ERROR_KEYWORD, data=json.dumps({'text':"エラー検索ワード : " + text}))
 
         # 該当する講義がなかったとき
         else:
@@ -315,7 +321,7 @@ def handle_message(event):
                 TextSendMessage(text='該当する講義情報が見つかりませんでした。'))
             # slackに報告
             SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
-            requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
+            requests.post(SLACKBOT_ERROR_KEYWORD, data=json.dumps({'text':"見つからなかった検索ワード : " + text}))
 
     #検索結果が空だったとき、その旨をユーザーに送信
     else :
@@ -324,7 +330,7 @@ def handle_message(event):
             TextSendMessage(text='教官名または講義名を入力してください.'))
         # slackに報告
         SLACKBOT_WEBHOOK_URL = os.environ["SLACKBOT_ERROR_KEYWORD"]
-        requests.post(SLACKBOT_WEBHOOK_URL, data=json.dumps({'text':"たぶん適当な検索ワード : " + text}))
+        requests.post(SLACKBOT_ERROR_KEYWORD, data=json.dumps({'text':"たぶん適当な検索ワード : " + text}))
 
 #####################################################################################
 
